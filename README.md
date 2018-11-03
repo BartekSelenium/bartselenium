@@ -1,1 +1,3 @@
 # bartselenium
+
+Pierwsze repozytorium
