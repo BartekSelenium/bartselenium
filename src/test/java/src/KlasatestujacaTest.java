@@ -34,8 +34,8 @@ public class KlasatestujacaTest {
 		
 		obiekt.wpisz_skad("Krakow");
 		obiekt.wpisz_dokad("Frankfurt");
-		obiekt.data_wylot("09/09/2018");
-		obiekt.data_przylot("09/09/2018");
+		//obiekt.data_wylot("09/09/2018");
+		//obiekt.data_przylot("09/09/2018");
 		obiekt.kliknij_szukaj();
 	  
   }
