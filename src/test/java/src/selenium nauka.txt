@@ -930,6 +930,9 @@ Comparator<Employee> komparator = Comparator.comparing(Employee::getName,
 
 ewentualnie coœ takiego 
 
+w comparable po prostu nadpisujemy sobie w³asny komparator, jak on ma sortowaæ, i wtedy kiedy u¿ywamy metody sort() to podajemy tylko listê bez ¿adnch dodatkowych argumentów.
+A comparing to 2 argumenty i tam po prostu mo¿emy korzystaæ z gotowych rozwi¹zañ
+
 Comparator<Employee> komparator = Comparator.comparing(Employee::getName);
 		Comparator<Employee> komparatorOdwrocony = komparator.reversed();
 --------------------------------------------------------------------------------------
@@ -983,6 +986,464 @@ public static List<String> moja_funkcja() throws MalformedURLException {
 		
 		driver.get(baseUrl);
 		WebElement ele1 = driver.findElement(By.id("carselect"));
---------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+mo¿na imprelemtnowaæ Comparator (ma metodê compare) oraz Comparable (ma metodê compareTo), w Comparable robimy Override metody compareTo
+
+tworzenie komparator 
+public class Employee{    // tutaj nie ma nic w tej klasie 
+	private int ranking;
+	private String name;
+	private int age;
+
+nastêpnie musimy stworzyæ osobn¹ klasê do komparatora 
+public class EmployeeAgeComparator implements Comparator<Employee>{
+
+	@Override
+	public int compare (Employee playerFirst, Employee playerSecond) {
+		return (playerFirst.getAge() - playerSecond.getAge());
+	}	
+}
+
+in nastêpnie w ostateczej klasie wywo³ujemy ten obiekt komparatora i sortujemy 
+EmployeeAgeComparator komparatorAge = new EmployeeAgeComparator();
+		
+		
+		System.out.println(lista);
+		Collections.sort(lista, komparatorAge);
+		System.out.println(lista);
+		
+-------------------------------------------------------------------------
+
+tworzenie komparator z u¿yciem lambad, to jest identyczny komparator jak comparing 
+
+Comparator<Employee> komparatorB = (Employee emp1, Employee emp2) ->
+		emp1.getRanking() - emp2.getRanking();
+		
+		
+		System.out.println(lista);
+		Collections.sort(lista, komparatorB);
+-------------------------------------------------------------
+
+konwertowanie tablicy int do listy int 
+int[] lista = {5, 1, 7, 66, 88, 89, 123, 200, 2, 255};
+	
+	List<Integer> lista2 = Ints.asList(lista);
+----------------------------------------------------------
+
+List<Map.Entry<String, ?>> entryList = new List<>(//initialization);
+List<String> stringList = entryList.stream().map(Entry::getKey).collect(Collectors.toList());
+
+---------------
+lista przy drukowaniu jest oznaczana jako {}
+a tablice jako [] - chyba 
+---------------------------------------------------------
+
+Map.Entry<Integer, String> entry to po prostu typ danych 
+jak np 
+String entry 
+--------------------------------------
+
+HashMap<Integer, String> mapa2 = new HashMap<>();
+	    mapa2.put(7, "ala");
+	    mapa2.put(5, "ma");
+	    mapa2.put(6, "kota");
+	    
+	    List<Map.Entry<Integer,String>> listaMap = new ArrayList<>(mapa2.entrySet());    
+	    
+	    Integer[] sortedKeys = new Integer[] {5, 6, 7};
+	    
+	    Collections.sort(listaMap, new Comparator<Entry<Integer, String>>()
+	    {
+	    	@Override
+	    	public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2) {
+	    		return o1.getKey().compareTo(o2.getKey());
+	    	}
+	    	
+	    });
+	    
+	    Map<Integer, String> posortowana = new LinkedHashMap<>();
+	    
+	    for (Map.Entry<Integer, String> entry : listaMap) {
+	    	posortowana.put(entry.getKey(), entry.getValue());
+	    }
+
+----------------------------------------------------------------------
+
+sortowanie tablicy obiektów za pomoc¹ komparatora, sortowanie po imieniu 
+
+ArrayList<Employee> employees = new ArrayList<Employee>();
+		employees.add(new Employee ("John", 25, 3000));
+		employees.add(new Employee ("Ace", 22, 2000));
+		employees.add(new Employee ("Keith", 35, 4000));
+
+public class Employee implements Comparable{
+
+@Override
+	public int compareTo(Object obj) {
+		Employee emp  = (Employee) obj;
+		return getName().compareTo(emp.getName());
+	}
+
+Collections.sort(employees);
+		System.out.println(employees);
+----------------------------------------------------------------
+
+ostateczna zasada: comparator implementujemy w klasie, w której robimy porównanie, czyli 
+
+public class BicycleComparator2 implements Comparator <Bicycle2>{
+	
+	@Override
+	public int compare(Bicycle2 o1, Bicycle2 o2) {
+		return o1.getBrand().compareTo(o2.getBrand());
+	}
+	
+	public static void main (String[] args) {
+		
+		BicycleComparator2 obiekt = new BicycleComparator2();
 
 
+BicycleComparator2 obiekt = new BicycleComparator2();	
+		
+	ArrayList<Bicycle2> lista = new ArrayList<Bicycle2>();
+	
+	lista.add(new Bicycle2 ("ma", 20));
+	lista.add(new Bicycle2 ("ala", 30));
+	lista.add(new Bicycle2 ("ja", 24));
+	
+	ArrayList<Bicycle2> listaPosortowana = new ArrayList<Bicycle2>();
+	
+	listaPosortowana = (ArrayList<Bicycle2>) lista
+	.stream()
+	.sorted( (a,b) ->  obiekt.compare(a, b))
+	.collect(Collectors.toList());
+	
+	System.out.println(listaPosortowana)
+
+
+natomiast implements Comparable robimy w klasie obiektu 
+public class Player implements Comparable<Player> {
+     
+    //...
+    @Override
+    public int compareTo(Player otherPlayer) {
+        return (this.getRanking() - otherPlayer.getRanking());
+    }
+}
+
+--------------------------------------
+warunek? wyra¿enie1 : wyra¿enie2;
+
+Jak robiæ streamy ?
+
+https://www.baeldung.com/java-8-streams
+
+Collection<String> kolekcja = Arrays.asList("a", "b", "c");
+	Stream<String> streamKolekcji = kolekcja.stream();
+
+kolejny sposób 
+Stream<String> stream = Stream.of("a", "b", "c");
+
+kolejny sposób 
+String[] tablica = new String[] {"a", "b", "c"};
+		Stream<String> stream = Arrays.stream(tablica);
+
+------
+drukowanie streama 
+Stream<Integer> intStream = Stream.iterate(40, n -> n+2).limit(20); 
+		intStream.forEach(ele -> System.out.println(ele));
+-------------------------------------------------------------
+
+Stream<String> cos = Stream.of("a", "b", "c", "d", "bart").filter(ele -> ele.contains("b"));
+
+
+Stream<String> cos = Stream.of("a", "hhbbb", "c", "d", "bart").filter(ele -> ele.contains("b"));
+		java.util.Optional<String> anyElement = cos.findAny();
+		String ele = anyElement.get();
+---------------------------------------
+
+filtrowanie stream ze s³owem return oraz u¿ycie nawiasów
+
+Stream<String> ggg = lista
+				.stream()
+				.filter(  ele -> 
+				{
+				return ele.contains("b");       }
+						
+						);
+-------------------------------------------------------------------------
+
+kolejnoœæ wykonywania filter oraz map 
+
+List<String> lista = Arrays.asList("aaaa", "bbb", "ccc");
+		counter = 0;
+		
+		java.util.Optional<String> stream2 = lista.stream().filter(element -> {
+		    System.out.println("filer was called");
+		    return element.contains("c");
+		}).map(element -> {
+			System.out.println("upper case was called");;
+		    return element.toUpperCase();
+		}).findFirst();
+			
+		String ele = stream2.get();
+		System.out.println(ele);
+
+wynik dzi³ania funkcji to 
+
+filer was called
+filer was called
+filer was called
+upper case was called
+CCC
+-----------------------------------------------
+
+filtrowanie mapy po kluczu, wartoœci mapowanie stream 
+
+Map<String, String> books = new HashMap<>();
+		books.put("978-0201633610", "Design patterns : elements of reusable object-oriented software");
+		books.put("978-1617291999", "Java 8 in Action: Lambdas, Streams, and functional-style programming");
+		books.put("978-0134685991", "Effective Java");
+		
+		
+		
+		java.util.Optional<String> wynik = books
+				.entrySet()
+				.stream()
+				.filter(ele -> ele.getValue().equals("Effective Java"))
+				.map(Map.Entry::getKey)
+				.findFirst();
+		
+		System.out.println(wynik.get());
+assertEquals(wynik.get(), "Effective Java");
+-------------------------------------------------------------
+
+klasa abstrakcyjna - klasa g³ówna 
+
+public abstract class BaseFileReader {
+
+public abstract String konwertuj (String napis);
+
+public List<String> pobierzListe (List<String> lista) {
+	
+	return 
+	lista
+	.stream()
+	.map(this::konwertuj)
+	.collect(Collectors.toList());
+}
+
+oraz klasa, która dziedziczy 
+
+----------------------
+
+public class LoweCaseFileReader extends BaseFileReader {
+	
+	@Override
+	public String konwertuj (String napis) {
+		return napis.toUpperCase();
+	}
+
+	
+	public static void main (String[] args) {
+		LoweCaseFileReader obiekt = new LoweCaseFileReader();
+		
+		List<String> lista = new ArrayList<String>();
+		lista.add("ala");
+		lista.add("ma");
+		lista.add("kota");
+		
+		System.out.println(obiekt.pobierzListe(lista));
+		
+		
+	}
+}
+
+-----------------------------------------------------------------------------
+
+interface 
+klasa która implementuje interface, to musi te¿ nadpisaæ metody abstrakcyjne, które s¹ w interfajsie - czyli identycznie jak w klasie abstrakcyjnej 
+
+-----------------------------------------------------------------------------
+
+nauka dziedziczenia na postawie interia.pl
+
+klasa g³ówna interia.pl
+
+public class interiaStronaGlowna {
+	
+	
+public static void main (String[] args) throws InterruptedException {
+	
+	
+	
+		WebDriver driver;
+		String baseUrl;
+		
+			System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+			driver = new ChromeDriver();
+			baseUrl = "https://www.interia.pl/";
+			driver.manage().window().maximize();
+		
+		
+			driver.get(baseUrl);
+			//WebElement loginLink = driver.findElement(By.xpath("//div[@class='calendar-image']"));
+			
+			Thread.sleep(6000);
+			WebElement przejdzDoSerwisu = driver.findElement(By.xpath("//button[@class='rodo-popup-agree']"));
+			przejdzDoSerwisu.click();
+			
+			Thread.sleep(3000);
+			//List<WebElement> moja_lista = driver.findElements(By.xpath("//a[@class='portal-menu-a']"));
+			 //Actions najedz = new Actions(driver);
+			 //najedz.clickAndHold(loginLink).perform();
+			 //Thread.sleep(3000);
+			 //WebElement tekst = driver.findElement(By.xpath("//p[@class='calendar-details-desc']"));
+			  //String toolTipText = tekst.getText();
+			  //System.out.println(toolTipText);
+			  
+			  //if (toolTipText.contains("wystrzelona")) {
+			//	  System.out.println("megaa");
+			  //}
+		
+			  
+			  WebElement motoryzacja = driver.findElement(By.xpath("//a[@title='Moto']"));
+			  Actions actions = new Actions(driver);
+			  actions.moveToElement(motoryzacja);
+			  actions.perform();
+			  motoryzacja.click();
+			  
+			  podstronaMotoryzacja obiektPodstronaMotoryzacja = new podstronaMotoryzacja(driver);
+			  obiektPodstronaMotoryzacja.getMotoryzacjaWiadomosci().kliknijLinkWiadomosci();
+		
+	
+			driver.quit();
+		}
+
+
+}
+------------
+
+podstrona motoryzacja 
+
+public class podstronaMotoryzacja extends webdriverPage{
+
+	private motoryzacjaWiadomosci obiekMotoryzacjaWiadomosci;
+	
+	private String napis;
+	
+	
+//jesli chcemy korzystac z obiektu wy¿ej, to musimy zrobic getter i setter 
+	public podstronaMotoryzacja(WebDriver driver) {
+		super(driver);
+		obiekMotoryzacjaWiadomosci = new motoryzacjaWiadomosci(driver);
+	}
+	
+	
+	//to dzia³a - to po prostu tworzenie obiektu
+	//motoryzacjaWiadomosci obiekt = new motoryzacjaWiadomosci(driver);
+	
+	
+	//getter
+	public motoryzacjaWiadomosci getMotoryzacjaWiadomosci() {
+		return obiekMotoryzacjaWiadomosci;
+	}
+	
+	//getter
+	public String getNapis() {
+		return napis;
+	}
+		
+	
+	
+	
+}
+---------------------
+
+podstrona wiadomoœci
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class motoryzacjaWiadomosci extends webdriverPage{
+
+	public motoryzacjaWiadomosci(WebDriver driver) {
+		super(driver);
+	}
+
+	
+	
+	public void kliknijLinkWiadomosci () throws InterruptedException {
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//li/a[@href='/wiadomosci']")).click();
+		Thread.sleep(5000);
+	}
+	
+
+}
+
+------------------------------
+klasa webdriver 
+
+import org.openqa.selenium.WebDriver;
+
+public class webdriverPage {
+	
+	protected final WebDriver driver;
+	
+	public webdriverPage (WebDriver driver) {
+		this.driver = driver;
+	}
+	
+	
+
+}
+------------------------------------------------------------
+
+enum oraz tworzenie obiektów w enumie
+
+
+public class Pizza {
+    
+	public enum pizzaStatus {
+		ORDERED("zamowiona"),
+		READY("gotowa"),
+		DELIVERED("dostarczona");
+		
+		public String status;
+		
+		pizzaStatus (String status) {
+			this.status = status;
+		}
+		
+		public String getValue () {
+			return status;
+		}
+		
+	}
+
+
+------oraz tworzenie obiektu bez s³owa new 
+
+public class PizzaEnum extends Pizza{
+	
+	public String wywolaj (pizzaStatus status) {
+		return status.getValue();
+	}
+	
+	public static void main (String[] args) {
+		
+		PizzaEnum obiekt = new PizzaEnum();
+		System.out.println(pizzaStatus.ORDERED.getValue());
+		
+		String ala = "dostarczona";
+		
+		pizzaStatus obiekEnuma = pizzaStatus.DELIVERED;
+		
+		System.out.println(obiekEnuma.getValue());
+
+	}
+
+
+}
+
+--------------------------------------------------------------------
