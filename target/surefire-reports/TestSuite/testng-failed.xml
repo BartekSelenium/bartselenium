@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="0" name="Failed suite [TestSuite]">
+  <test thread-count="5" verbose="0" name="Chrome Test Bartek(failed)">
+    <classes>
+      <class name="maven.Bartek.projektMavenBartek.InteriaStronaGlowna">
+        <methods>
+          <include name="afterClass"/>
+          <include name="beforeClass"/>
+          <include name="testuj"/>
+        </methods>
+      </class> <!-- maven.Bartek.projektMavenBartek.InteriaStronaGlowna -->
+    </classes>
+  </test> <!-- Chrome Test Bartek(failed) -->
+</suite> <!-- Failed suite [TestSuite] -->

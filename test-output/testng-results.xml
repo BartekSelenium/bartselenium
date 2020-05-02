@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="33522" started-at="2020-04-27T21:37:56Z" finished-at="2020-04-27T21:38:30Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="33522" started-at="2020-04-27T21:37:56Z" finished-at="2020-04-27T21:38:30Z">
+      <class name="maven.Bartek.projektMavenBartek.InteriaStronaGlowna">
+        <test-method status="PASS" signature="beforeClass()[pri:0, instance:maven.Bartek.projektMavenBartek.InteriaStronaGlowna@27efef64]" name="beforeClass" is-config="true" duration-ms="8494" started-at="2020-04-27T21:37:56Z" finished-at="2020-04-27T21:38:05Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- beforeClass -->
+        <test-method status="PASS" signature="testuj()[pri:0, instance:maven.Bartek.projektMavenBartek.InteriaStronaGlowna@27efef64]" name="testuj" duration-ms="22924" started-at="2020-04-27T21:38:05Z" finished-at="2020-04-27T21:38:28Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testuj -->
+        <test-method status="PASS" signature="afterClass()[pri:0, instance:maven.Bartek.projektMavenBartek.InteriaStronaGlowna@27efef64]" name="afterClass" is-config="true" duration-ms="2018" started-at="2020-04-27T21:38:28Z" finished-at="2020-04-27T21:38:30Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- afterClass -->
+      </class> <!-- maven.Bartek.projektMavenBartek.InteriaStronaGlowna -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
