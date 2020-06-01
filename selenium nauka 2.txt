@@ -1,0 +1,1743 @@
+w elements dajemy ctrl f i wpisujemy 
+
+//input[@id='name']           lub odpowiednik input[class='inputs']
+
+ale w consoli wpisujemy 
+
+$x("//input[@id='name']")
+
+-----------------------------------
+
+- i frame - 
+daję na jakimś elemencie inspect - a później naciskam console - na samej górze widzę podświetlenie na czerwono iframe - wtedy wiem, że parent jest iframe
+
+
+
+$x("//div[@class='collapse navbar-collapse']")
+------------------------------------------------------
+
+Komendy Java 
+System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+String adres = "https://demostore.x-cart.com/";
+driver.get(adres)
+//driver.findElement(By.id("lst-ib")).sendKeys("sklep narciarski rzeszów");
+		
+		//driver.findElement(By.linkText("Login")).click();
+		Thread.sleep(3000);
+		//driver.findElement(By.partialLinkText("Practi")).click();
+		//driver.findElement(By.className("")).click();
+		driver.findElement(By.xpath("//div[@class='collapse navbar-collapse']")).click();
+                driver.findElement(By.id("user_email")).clear(); // szukanie po id oraz czyszczenie pola 
+		driver.findElement(By.id("user_email")).sendKeys("adres@test.com"); - przesyłanie danych do formularza
+
+-----------------------
+znajdowanie po CSS
+klasyczna komenda to:
+//input[@id='displayed-text']
+
+ale jak wpiszę 
+#displayed-text  to też znajdzie to samo, co u góry 
+
+x pathem tzn ranorex znajduję coś takiego:
+#displayed-text (to jest z tego co wiem css)
+ale naciskam dalej ctrl f i wpisuję coś takiego:
+input[id='displayed-text'] -zalecane 
+
+ale można też wpisać tak:
+input#id='displayed-text' i to jest to samo co "input[id='displayed-text']"
+
+W CSS są dwa znaki kluczowe:
+1. "#" -> id
+2. "." -> Class
+---------------
+znajdowanie dla klasy - jest coś takiego:
+klasyczny przykład jest taki:
+//input[@class='inputs displayed-class']
+
+ale działa też 
+
+input[class='inputs displayed-class']
+
+.displayed-class
+input,displayed-class
+------------------------
+
+Teamt Wildcars CSS selectors 
+^początek 
+$koniec
+*
+
+przykład 
+input[class='inputs']
+ale jak wpisze coś takiego input[class^='inputs'] - to znajduje wszystkie stringi zaczynające się od class, tak więc u nas są to 2 przypadki
+
+albo koniec stringa 
+input[class*='displayed-class'] - to znajdzie klasę inputs displayed-class
+
+Gwiazdka oznacza szukanie gdziekolwiek 
+np
+input[placeholder*='Enter'] znajdzie placeholder ="enter your name"
+----------
+lekcja child nodes
+fieldset>table to znajduje parenta fieldset oraz szuka w nim dziecka table
+----------------------------
+
+Lekcja - junit
+--------------
+lekcja how to navigate between web pages 
+String tytul = driver.getTitle(); - pobranie title strony 
+
+Jak nie chcemy szukać po xpath to można zrobić coś takiegom, szukanie po linku 
+String urlToNavigate = "https://sso.teachable.com/secure/42299/users/sign_in?clean_login=true&reset_purchase_session=1";
+		driver.navigate().to(urlToNavigate);
+--------
+driver.navigate().refresh(); - odświeża stronę 
+System.out.println(bmw_radio.isSelected()); - sprawdzenie, czy radio button jest zaznaczony 
+--------------------
+
+ctrl F - ważne !!
+//input[contains(@type, 'radio') and contains (@name, 'cars')]  coś takiego znajduje w naszym przypoadku 3 elementy i później możemy je dodać do listy w javie 
+----------------------
+sprawdzenie, czy element jest aktywny, czy nie 
+WebElement e1 = driver.findElement(By.id("gs_htif0"));
+		System.out.println("E1 is Enabled? " + e1.isEnabled());
+-----------------------
+
+Lekacja 101 - dropdown menu 
+- jak lista dropdown ma wiele elementów, to ja nie chcę pisać wielu xpath - to jest pytanie 
+WebElement ele1 = driver.findElement(By.id("carselect")); //to wybiera tylko głównego selecta
+		Select select_lista = new Select(ele1); //obiekt klasy Select - tu są wszystkie wartości zapisane
+		select_lista.selectByValue("bmw");
+		Thread.sleep(2000);
+		
+		select_lista.selectByIndex(2);
+		Thread.sleep(2000);
+		
+		select_lista.selectByVisibleText("Honda");
+		Thread.sleep(2000);
+
+Natomiast tu tworzymy listę selectów (to się robi inaczej niż lista readio)
+	List<WebElement> moja_lista = select_lista.getOptions();
+		int rozmiar = moja_lista.size();
+		
+		for (int i=0; i<rozmiar; i++) {
+			String jednostka = moja_lista.get(i).getText();
+			System.out.println(jednostka);
+		} 
+oraz tu dodałem drukowanie tej listy za pomocą metody get text 
+
+a to jest druga pętla ze wcześniejszego przykładu, która działa identycznie jak powyższa: 
+
+List<WebElement> moja_lista = select_lista.getAllSelectedOptions();
+		for (WebElement element : moja_lista) {
+			System.out.println(element.getText());
+		}
+------------------------------------
+------------------------------------
+	String zwroc = element.getAttribute("class"); - zwraca wartość danego elelementu w htmlu 
+---------------------
+
+explicit wait 
+
+WebDriverWait czekaj = new WebDriverWait(driver, 3);
+		WebElement pole_email = czekaj.until(
+				ExpectedConditions.visibilityOfElementLocated(By.id("user_email")));
+		pole_email.sendKeys("ala");
+------------------------------------------------------
+
+znajdowanie elementu poprzez java script i klikanie w niego 
+
+WebElement ele = (WebElement) js.executeScript("return document.getElementById('name');");
+ele.click();
+
+--------------------------------------------------
+
+java script - znajdowanie elementu, ale nie klikanie go 
+
+WebElement ele = driver.findElement(By.id("mousehover"));
+		js.executeScript("arguments[0].scrollIntoView(true);", ele);
+		Thread.sleep(2000);
+		js.executeScript("window.scrollBy(0, -190);");
+	}
+----------------------------------------
+
+kliknięcie w element za pomocą java script - to jest to samo co ele.click()
+
+jak checkbox jest już np zaznaczony to wtedy zwykła metoda click nie zadziała, bo będzie komunikat, że to już jest zrobione, dlatego wtedy trzeba to zrobić za pomocą java script
+
+WebElement ele = driver.findElement(By.id("bmwcheck"));
+		js.executeScript("arguments[0].click();", ele);
+-----------------------------------------------------
+
+otwieranie nowego okna
+String parentHandle = driver.getWindowHandle();
+WebElement ele1 = driver.findElement(By.id("openwindow"));
+		ele1.click();
+Set<String> wszystkie = driver.getWindowHandles();
+		for (String handler : wszystkie) {
+			System.out.println(handler);
+			if (!handler.equals(parentHandle)) {
+				driver.switchTo().window(handler);
+				Thread.sleep(2000);
+				WebElement ele2 = driver.findElement(By.id("search-courses"));
+				ele2.sendKeys("ala");
+				Thread.sleep(2000);
+				driver.close(); // zamyka aktualne okno
+				break;
+			}
+		}
+
+i na koncu znowu przełączamy na okno główne 
+driver.switchTo().window(parentHandle);
+--------------------------------------------------------------
+
+przykład na znalezienie xpath za pomocą wielu znaków // slash 
+/html//table[@id='product']//th[.='Price']
+
+------------------
+iframe (jeśli iframe nie ma id albo nazwy, to używamy numeru, czyli np 0 )
+driver.switchTo().frame("courses-iframe");
+		WebElement ele1 = driver.findElement(By.id("search-courses"));
+driver.switchTo().defaultContent(); // trzeba się przełączyc ponownie na okno podstawowe i szukamy klasycznie dalej 
+
+WebElement ele2 = driver.findElement(By.id("name"));
+--------------------------
+
+wyskakujące okienka java script 
+driver.get(baseUrl);
+		WebElement ele1 = driver.findElement(By.id("name"));
+		ele1.sendKeys("ala");
+		WebElement ele2 = driver.findElement(By.id("alertbtn"));
+		ele2.click();
+		Thread.sleep(3000);
+		Alert alert_okno = driver.switchTo().alert(); //obiekt klasy Alert
+		alert_okno.accept();
+		//alert_okno.dismiss();
+--------------------------------------------------
+- hover over oraz scroll za pomocą java script 
+
+private JavascriptExecutor js; //to w klasie głównej 
+js = (JavascriptExecutor) driver; // to w before 
+js.executeScript("window.scrollBy(0, 900);"); //to w teście i nic więcej 
+		Thread.sleep(2000);
+
+a później hover 
+
+Actions najedz = new Actions(driver);
+ajedz.moveToElement(element1).perform(); // i tyle, zero filozofii 
+----------------------------------------------
+drag and drop przeciągnie 
+driver.switchTo().frame(0);
+Actions akcje = new Actions(driver);
+		akcje.dragAndDrop(ele1, ele2).build().perform();
+
+albo coś takiego, to samo 
+action.clickAndHold(fromElement).moveToElement(toElement).release().build().perform();
+----------------
+--------------------------------------------------------------
+
+znajodwanie xpath ze słowem contains
+//a[contains(@href, 'sign_in')]
+w cudzysłowiu jest szukanie stringa czyli części linku
+
+------------------------------------------------------------------
+naciskanie przycisku enter na klawiaturze np przy logowaniu 
+//trzeba zrobić import biblioteki keys 
+WebElement ele4 = driver.findElement(By.xpath("//*[@id=\"new_user\"]/div[3]/input"));
+		ele4.sendKeys(Keys.ENTER);
+
+ewentulanie za pomocą aciton class
+Actions action = new Actions(driver);
+		action.keyDown(Keys.COMMAND).sendKeys("a").keyUp(Keys.COMMAND).perform();
+-------------------------------
+ctrl + a komenda - zaznaczenie wszystkie na stronie
+ele1.sendKeys(Keys.CONTROL + "a");
+-------------------------------
+------------------------------------------------
+
+Znajodwanie elementu po FindBy
+@FindBy(id="tab-flight-tab-hp")
+WebElement flights_przycisk; 
+
+Ale do tego trzeba też napisać konstruktor i wywołać go w innej klasie. 
+
+public framework_factory (WebDriver driver) {
+	this.driver = driver;
+	PageFactory.initElements(driver, this); // to musi być zawsze,kiedy stosujemy FindBy
+}
+
+Wywołanie: 
+(pod nazwą klasy na samej górze)
+framework_factory obiekt_konstruktora;
+
+a w Before ciąg dalszy czyli 
+obiekt_konstruktora = new framework_factory (driver);
+
+Natomiast klasycznie robi się coś takiego:
+//framework_factory obiekt_konstruktora = new framework_factory (driver); ---- to jest klasycznie 
+-----------------------------------------------------------------------------------------------------------
+-------------------------
+
+Ważne !!
+jeśli chcemy znaleźć np. wszystkie elementy na stronie, które są a href, to robimy coś takiego:
+
+List<WebElement> wszystkie_linki = driver.findElements(By.tagName("a"));
+
+czyli jest to znajdowanie po nazwie tagu
+------------------------------------------------------
+
+Log4j
+Aby korzystać z log4j należy zaimportować dwie biblioteki:
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+a później w główenej klasie 
+public class ala {
+	private static final Logger moj_log = LogManager.getLogger(ala.class.getName());
+
+a później w main 
+
+public static void main(String[] args) {
+		moj_log.debug("moj debug log");
+		moj_log.error("moj error log");
+		
+	}
+----------------------------------------------------------------------------------------
+kiedy chcę skorzystać z metody, która jest w innej klasie, ale ta klasa jest w tym samym package, to wtedy tworzę tylko zwykły obiekt tej klasy itd.
+Ale jeśli ta klasa jest w innym package, to wtedy muszę dać na samej górze import i nazwa tej klasy, a dopiero później stworzyć obiekt
+-------------------------------------------
+ctrl sfift + f - to komenda formatująca kod 
+-----------------------------------------------
+
+TestNg - 
+@AfterMethod  //to jest uruchamiane po każdej metodzie, podobnie jak Before 
+------------------
+
+@BeforeClass // a to sie uruchamia na samym początku, a dopiero później jest before method
+	public void beforeklasa() {
+		System.out.println("przed klasa");
+	}
+
+@AfterClass // a to się wykonuje na samym końcu, po after method
+	public void afterklasa() {
+		System.out.println("po klasa");
+	}
+
+--------------------------
+Mamy  na przykład stronę internetową, która ma 10 podstron, tak więc stworzyliśmy po jednej klasie dla każdej podstrony, czyli mamy 10 klas. Ale pytanie jak uruchomić 10 klas za jednym razem ? Tutaj przychodzi z pomocą test suite.
+Trzeba w takim przypadku utworzyć plik XML, ktory test NG przeczyta. 
+Klikamy na projekt i tworzymy zwykły nowy plik i tytułujemy go tak: plik.xml
+
+Może on wyglądać tak:
+
+	<suite name="regression test suite">
+	<test name="app test">
+		<classes>
+		<class name="lekcja_jeden.method_class_ann_158"> </class>
+		<class name="lekcja_jeden.klasa2_test_suite_159"> </class>
+		</classes>
+	
+	</test>
+	
+	</suite>
+
+lekcja_jeden to nazwa package
+---------------------------------------
+słowo kluczowe extends
+- jak chcę zaimportować klasę, która jest w innym package, to muszę dać w importach nazwę klasy oraz tę konkretną funkcję, czyli:
+
+import before_suite.Lekcja160_common_things; (nazwa package i po kropce nazwa klasy głównej, czyli nazwa pliku)
+
+oraz pod importem coś takiego:
+
+public class method_class_ann_158 extends Lekcja160_common_things
+---------------------------------------------------------------------
+
+Test NG
+tak się testuje w test ng 
+
+int result = obj.sumNumbers(1, 2);
+		
+Assert.assertEquals(result, 2);
+
+lub wywołujemy funkcję, która jest napisana w innej klasie, wynik przypisujemy do zmiennej result, a następnie porownujego go w funkcji assertsEquals
+-----------------------------------------------------
+
+test ng - aby metoda się nie uruchamiała należy zrobić coś takiego:
+@Test(enabled=false)
+
+	public void testMethod1() {
+
+	System.out.println("testMethod1");
+
+  }
+
+------------------------------
+testng 
+Assert.assertTrue(true); - sprawdza czy warunek w nawiasie jest prawdziwy, jeśli nie, wyrzuca błąd
+---------------------------------------------------
+listeners w testng używa się wtedy kiedy:
+- mamy jakąs funkcję i w zależności czy ona się wykona poprawnie czy nie, to w zaimplementowanej klasie ITestListener uruchaminay właśnie funkcję, która ma się uruchomić po poprawnie wykonanym teście. 
+-----------------------------------------
+GRID
+java -jar selenium-server-standalone-3.14.0.jar -role hub -port 5555
+java -jar selenium-server-standalone-3.14.0.jar -role node -hub http://localhost:5555/grid/register -port 6666
+----------------
+to wpisujemy w przeglądarce, żeby zobaczyć, co jest uruchomione
+http://localhost:5555/grid/console
+---------------------------------------------
+ustawienie przeglądarki 
+
+java -jar selenium-server-standalone-3.14.0.jar -role node -hub http://localhost:5555/grid/register -port 6666 -browser browserName=firefox,version=62.0,maxinstances=1,platform=WIN10
+---------------
+moje ip to 192.168.1.7
+-----------------
+komenda czytająca plik json 
+najpierw hub musi być ustawiony na post 5555
+java -jar selenium-server-standalone-3.14.0.jar -role node -nodeConfig grid.json
+-----------------------------
+
+chrome i firefox driver
+
+System.setProperty("webdriver.gecko.driver", "C://Users//Bartek//eclipse-workspace/geckodriver.exe");
+System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+--------------------------------
+
+ustawienie driverów dla chrome i forefox 
+
+java -Dwebdriver.gecko.driver="C://Users//Bartek//eclipse-workspace/geckodriver.exe" -Dwebdriver.chrome.driver="C://Users//Bartek//eclipse-workspace/chromedriver.exe" -jar selenium-server-standalone-3.14.0.jar -role node -nodeConfig grid.json
+
+---------------------------------------------------
+uruchomienie grida, klasa before 
+uzycie klasy DesiredCapabilities
+
+@BeforeEach
+	void setUp() throws Exception {
+		  baseUrl = "https://www.expedia.com/";
+		  nodeURL = "http://192.168.1.7:7777/wd/hub";
+		  DesiredCapabilities caps = DesiredCapabilities.chrome();
+			caps.setBrowserName("chrome");
+			caps.setPlatform(Platform.WINDOWS);
+			driver = new RemoteWebDriver(new URL(nodeURL), caps);
+			framework_factory searchPage = new framework_factory(driver);
+			
+			driver.manage().window().maximize();
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			driver.get(baseUrl);
+
+
+a normalnie before wygląda tak:
+
+@BeforeEach
+	void setUp() throws Exception {
+		System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		driver = new ChromeDriver();
+		baseUrl = "https://jqueryui.com/slider/";
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();	
+	}
+------------------------------------------------------
+maven 
+komenda do tworzenia projektu:
+
+cd eclipse-workspace a później 
+
+mvn archetype:generate -DgroupId=com.expedia.cli -DartifactId=flightsbookingcli -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+ale tak samo można utworzyć projekt w eclipse bez użycia komendy maven 
+-------------------------------------------------------------
+pobranie wszystkich dependencies, które mamy okreslone w pliku .pom 
+ta komenda pobiera pliku do katalogu workspace 
+
+mvn dependency:sources
+---------------------------------------------------------------------------
+połączenie pliku App.java który znajduje się w src/main/java z dependencies 
+- gdyby jakieś funkcje nie działały w pliku App.java
+komenda: 
+mvn dependency:resolve -DClassifier=javadoc
+-------------
+
+jenkins
+komenda cmd, aby uruchomić jenkins - trzeba uruchomić ja w lokalizacji, gdzie zanjduje się jenkins,
+java -jar jenkins.war 
+-----------------------------
+hasło i login do jenkins to admin, admin
+-----------------
+
+ - repository url 
+https://github.com/BartekSelenium/bartselenium.git
+
+adres do mojego gita url 
+https://github.com/BartekSelenium/bartselenium
+
+git exe na moim dysku to 
+C:\Program Files\Git\bin\git.exe
+--------------------------------------------------------
+
+- commit to zmiany jakie zrobiliśmy w pliku
+--------------------
+w folderze gdzie są moje pliki java wpisuję komendę
+- git init
+Następnie chcemy dodać nasz plik do utworzonego repozytorium:
+- git add index.html
+- jeśli mam dwa pliki to dwa razy ta komenda, albo raż można użyć komendy git add . 
+- później daję 
+-git commit -m "my first repository"
+-
+Teraz musimy się połączyć z naszym zdalnym repozytorium
+- git remote add origin https://github.com/BartekSelenium/bartselenium.git
+i później dajemy git push -u origin master (trzeba będzie podać dane do logowania)
+
+- git pull pobiera z reporytorium wszystkie pliki i zapisuje je u mnie na dysku 
+- u mnie pull musiał być taki, bo był błąd 
+git pull origin master --allow-unrelated-histories  - i ta komenda pobrała mi z serwera plik readme - tak wiec teraz mogę zrobić push
+-czyli 
+
+-------------------
+instrukcja github 
+https://www.flynerd.pl/2018/02/github-dla-zielonych-pierwsze-repozytorium.html
+-----------------------
+pom
+C:\Users\Bartek\eclipse-workspace\flightsbooking\pom.xml
+-----------------------
+
+Cucumber
+uruchomienie testu z Cucumber 
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+-----------------------------------
+klasa abstrakcyjna: mam jedną klasę abstrakcyjną 
+-------------------
+
+CarsInterface43 obiekt = new CarsInterfaceImplements43();
+		// to oznacza, że implementujemy obiekt tak naprawdę klasy CarsInterfaceImplements43
+		// czyli mamy dostęp do funkcji engineStart
+		
+		// ale może być też klasycznie, czyli 
+		//CarsInterfaceImplements43 obiekt = new CarsInterfaceImplements43();
+----------------------------------------------------------
+
+Klasa abstrakcyjna:
+- public abstract void uruchom_silnik (String kluczyk, int ilosc); // to jest metoda abstrakcyjna, która nie może mieć body
+	// czyli ta funkcja nie ma nawiasów 
+	//każda kolejna klasa będzie musiala implementować tę metodę
+
+dalej
+
+nie da się tworzyć obiektów klasy abstrakcyjnej
+obiekty po prostu tworzymy w klasie, która rozszerza klasę abstrakcyjne 
+
+ale dlaczego da się tworzyć konstruktor w klasie abstrakcyjnej, jak z niego później nie mogę korzystać ?
+-------------
+
+interface - > jeśli dana klasa implementuje interfejs (implements) to musi zaapliwoać wszystkie metody, jakie są w interfejsie 
+- zwykła klasa może implementować kilka interfejsów i to jest róznica w stosunku do klas abstr
+- tworzenie obiektu inaczej, czyli:
+
+CarsInterface43 obiekt = new CarsInterfaceImplements43();
+
+w tym przypadku chodzi o to, że nie można tworzyć obiektu klasy interfejs (jak w kl abstr), dlatego nie można napisać CarsInterface43 obiekt = new CarsInterface43(); - (po prostu CarsInterface43  jest interfejsem)
+- a jak napiszemy CarsInterface43 obiekt = new CarsInterfaceImplements43(); to tworzymy obiekt klasy CarsInterfaceImplements43, ale mamy dostęp tylko do funkcji z klasy CarsInterface43. 
+-------------------------
+
+mapa, lista
+
+Map<String, String> lista = new HashMap<>();
+		
+		lista.put("Ala", "kotka");
+		lista.put("Basia", "pieska");
+		lista.put("Ola", "krolika");
+		
+		System.out.println(lista); // takie coś da w konsoli {Basia=pieska, Ola=krolika, Ala=kotka}
+-----------------------------------
+listy mapy drukowanie 
+tutaj mamy akurat listę list 
+List<String> lista1 = new ArrayList<String>();
+		lista1.add("ala");
+		lista1.add("ma");
+		lista1.add("kota");
+		
+		
+		List<String> lista2 = new ArrayList<String>();
+		lista2.add("bartek");
+		lista2.add("uczy");
+		lista2.add("sie");
+		
+		List<List<String>> lista3 = new ArrayList<List<String>>();
+		lista3.add(lista1);
+		lista3.add(lista2);
+		
+		System.out.println(lista3.get(1).get(0));
+--------------------------------------------
+Arrays as list drukowanie
+String a[] = new String[]{"abc","klm","xyz","pqr"};
+		 List bbb = Arrays.asList(a);
+		 System.out.println(bbb);
+----------------------------------
+
+klasa dropdown 
+package src;
+
+import org.openqa.selenium.WebDriver;
+import java.util.ArrayList;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class dropdownAssert {
+
+	public static void main(String[] args) {
+		
+		//List<String> zmienna = moja_funkcja();
+		//System.out.println(zmienna);
+		
+	}
+	
+	public static List<String> moja_funkcja() {
+		WebDriver driver;
+		String baseUrl;
+		System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		driver = new ChromeDriver();
+		baseUrl = "http://letskodeit.teachable.com/pages/practice";
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();	
+		
+		driver.get(baseUrl);
+		WebElement ele1 = driver.findElement(By.id("carselect"));
+		Select lista_dropdown = new Select(ele1);
+		List<WebElement> lista_drukowanie = lista_dropdown.getOptions();
+		List<String> lista_stringow = new ArrayList<String>();
+		
+		for (WebElement element : lista_drukowanie) {
+			lista_stringow.add(element.getText());
+		}
+		return lista_stringow;
+	}
+	}
+
+i teraz druga klasa testująca 
+
+package src;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+public class dropdownAssertTest {
+
+	List<String> wynik = new ArrayList<String>();
+	
+	@Test
+	public void testowaine_dropdown () {
+		dropdownAssert obiekt_klasy_dropdownAssert = new dropdownAssert();
+		wynik = obiekt_klasy_dropdownAssert.moja_funkcja();
+		List<String> spodziewany = new ArrayList<String>();
+		spodziewany.add("BMW");
+		spodziewany.add("Benz");
+		spodziewany.add("Hondaz");
+		Assert.assertEquals(wynik, spodziewany);
+	}
+	
+	
+}
+-----------------------------------------------------------------------
+
+xpath wyszukuje elementy h1 oraz span w konrektnej klasie
+return driver.findElement(By.className("mT")).findElements(By.xpath("*[self::h1 or self::span]")).stream().map(WebElement::getText).map(String::trim)
+			.collect(Collectors.toList());
+------------------------------------------------------
+
+Klasy abstrakcyjne:
+- nie można tworzyć obiektu klasy abstrakcyjnej, dlatego jeśli w nowej klasie chcemy skorzystać z metod klasy abstrakcyjnej to w tej nowej metodzie musimy użyć słowa 'extends'
+----------------------
+
+Dziedziczenie:
+- mamy klasę główną, która ma w sobie konstruktor - tak więc klasa, która dziedizczy, też musi mieć konstruktor
+- klasa, która dziedziczy może nadpisywać metody, które dziedziczy słowem Override lub całkowicie je kopiować za pomocą słowa super
+- po co robić dziedziczenie, jeśli możemy stworzyć obiekt klasy głównej za pomocą słowa new w naszej drugiej klsie i w ten sposób możemy korzystać ze wszystkich funkcjonalności klasy głównej ????????????
+- jak do głównej mojej klasy dodałem słowo "abstract" to nic sie nie zmieniło - więc po co to stosować ?
+- nie można tworzyć obiektu interfajsu i klasy abstrakcyjnej 
+-------------------------------
+
+xpath mój własny
+//legend[contains(text(),'Checkbox Example')]//following-sibling::label/input[contains(@value,'bmw')]
+-------------------------------
+drukowanie i modyfikowanie hash mapy
+klucze i wartości za pomocą stream 
+
+Map<String, Integer> wyplata = new HashMap<>();
+		wyplata.put("John", 40000);
+		wyplata.put("Freddy", 30000);
+		wyplata.put("Samuel", 50000);
+		
+		wyplata.keySet().stream().forEach(element -> System.out.println(element+" ooo"));
+		wyplata.values().stream().forEach(ele -> System.out.println(ele+1000));
+------------------------------------------------------
+filtrowanie elementów, stream 
+
+List<String> names = Arrays.asList("Angela", "Aaron", "Bob", "Claire", "David");
+		
+		List<String> names2 = names.stream().filter(element -> element.startsWith("A"))
+				.collect(Collectors.toList());
+		System.out.println(names2);
+-----------------------------------------------------
+
+streamy
+strzałeczka oznacza po prostu wyrażenie lambda, czyli element i po strzałce, co robię na tym elemencie
+
+dwukroopki - to oznacza najczęściej klasa::metodWtejKlasia 
+
+ale może być też coś takiego 
+names.stream().forEach(System.out::println);
+
+dwa dwukropki to referencja metod
+
+możemy zrobić coś takiego 
+List<String> names = Arrays.asList("Angela", "Aaron", "Bob", "Claire", "David");
+
+		names.replaceAll(ele -> ele.toUpperCase());
+
+lub za pomocą referencji 
+
+		names.replaceAll(String::toUpperCase);
+---------------------------------------------------------------------
+
+drukowanie, stream, wszystkch elementów z literą a 
+List<String> names = Arrays.asList("Angela", "Aaron", "Bob", "Claire", "David");
+		
+		names
+		.stream()
+		.filter(ele -> ele.contains("a"))
+		.forEach(ele -> System.out.println(ele));
+----------------------------------------------------------------------------
+
+kurs internetowy 
+https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-lambdas
+--------------------------
+
+sortowanie tablicy intów za pomocą stream 
+List<Integer> numbers = Arrays.asList(5, 3, 50, 24, 40, 2, 9, 18);
+List<Integer> numbers2 = numbers
+			.stream()
+			.sorted((a,b) -> Integer.compare (a,b))
+			.collect(Collectors.toList());
+
+
+lub za pomocą referencji metod 
+List<Integer> numbers2 = numbers
+			.stream()
+			.sorted(Integer::compare)
+			.collect(Collectors.toList());
+-------------------------------------------------------------------------------
+
+do streama możemy podać listę obietków i ją posortować:
+ale ważne jest to, że musimy wtedy stworzyć obiket klasy, w której jest funkcja sortująca
+czyli referencja metody sortującej jest na nowo stworzonym obiekcie, a nie na klasie jak zawsze 
+
+public class BicycleComparator implements Comparator <Bicycle> {
+
+	@Override
+	public int compare(Bicycle a, Bicycle b) {
+		return a.getFrameSize().compareTo(b.getFrameSize());
+	}
+
+
+public static void main (String[] args) {
+		
+		 ArrayList<Bicycle> listOfBicycles = new ArrayList<Bicycle>();
+		 listOfBicycles.add(new Bicycle ("jeden", 40));
+		 listOfBicycles.add(new Bicycle ("dwa", 20));
+		 listOfBicycles.add(new Bicycle ("trzy", 50));
+		 listOfBicycles.add(new Bicycle ("cztery", 10));
+		 listOfBicycles.add(new Bicycle ("piec", 30));
+		
+		 ArrayList<Bicycle> listOfBicycles2 = new ArrayList<Bicycle>();
+		 
+		 BicycleComparator obiekt = new BicycleComparator();
+		 
+		 listOfBicycles2 = (ArrayList<Bicycle>) listOfBicycles
+		 .stream()
+		 .sorted((a,b) -> obiekt.compare(a, b))  // to jest wyrażenie lambda
+		 .collect(Collectors.toList());
+	
+		 System.out.println(listOfBicycles2);
+-----------------------------------------------------------------------------------
+ale można też zrobić to za pomocą referencji metod
+------------------
+Optional 
+@Test
+	public void whenCreatesEmptyOptional_thenCorrect() {
+	    String napis = "alamakota";
+	    Optional <String> napis2 = Optional.ofNullable(napis);
+	    assertTrue(napis2.isPresent());
+	    
+
+Optional<String> opt = Optional.of("Baeldung");
+    assertFalse(opt.isEmpty());
+
+Optional <String> napis = Optional.of("alamakota");
+napis.ifPresent(ele -> System.out.println(ele.length()));
+
+
+String napis = null;
+		String napis2 = Optional.ofNullable(napis).orElse("alamakota");
+
+assertEquals("alamakota", napis2); // pierwsza wartość, to wartość expected
+---------------------------
+
+aby uzyskać wartość z Optionala musimy użyć metody GET 
+
+Optional<String> napis = Optional.of("alama");
+	String napis2 = napis.get();
+	assertEquals("alama", napis2);
+-----------------------------------------------------
+
+optional oraz przekazanie obiektu jako argumentu do metody funkcji 
+
+public static boolean czyJest (Modem obiektModem) {
+		return Optional.ofNullable(obiektModem)
+				.map(Modem::getModem)
+				.filter(wartosc -> wartosc <= 100)
+				.isPresent();
+		
+	}
+
+Modem::getModem to po prostu getter - > zwraca wartosc int i tyle // getter, setter 
+
+
+test robimy za pomocą czegoś takiego 
+
+@Test
+	public void testuj() {
+		
+		assertTrue(czyJest(new Modem(20.0)));
+		
+		
+	}
+
+-------------------------------------------------------------------
+- jeśli chcemy korzystać z map, stream itd to na zwykłej zmiennej się to nie uda - > musimy przerobić zwykły obiket na Optionala i wtedy można korzystać ze streamów itd
+
+Przykład:
+PersonOptional persOpt = new PersonOptional("ala", 19);
+		Optional <PersonOptional> OptionalPersOpt = Optional.of(persOpt);
+		
+		Optional<Optional<String>> ala = OptionalPersOpt.map(PersonOptional::getName);
+------------------------------------------
+
+wyswietlanie pierwszej nie nullowej wartosci
+getbye i gethello to zwykle metody które zwracają napisy 
+
+Optional<String> znalazlem = Stream.of(getEmpty(), getBye(), getHello())
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.findFirst();
+				System.out.println(znalazlem);
+				String cos = znalazlem.get();
+				System.out.println(cos);
+----------------------------------------------------------------------
+listę optionali robimy po prostu aarays.asList
+
+Aby z listy optional zrobić listę Stringów, używamy po prostu Optional::get
+
+List<Optional<String>> names = Arrays.asList(getEmpty(), getHello(), getBye());
+		
+		List<String> names2 = names
+				.stream()
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.collect(Collectors.toList());
+		
+		System.out.println(names2);
+-----------------------------------------------------------------------------
+
+użycie flatMap 
+na ten moment niestety jedynie takie użycie znam, do flatmapy przekazujemy metodę z danej klasy, która zwraca optionala, a z tego optionala robiony jest zwykły string
+
+ String name = personOptional
+      .flatMap(Person::getName)
+      .orElse("");
+    assertEquals("john", name);
+----------------------------------------------------------------
+
+consumer 
+List<String> lista = Arrays.asList("ala", "ma", "kota", "psa");
+
+		Consumer<String> consumer = ele -> System.out.println(ele);
+		
+		lista.stream().forEach(consumer);
+---------------------------------------------------------------------------
+comparator 
+
+ArrayList<Employee> employees = new ArrayList<Employee>();
+		employees.add(new Employee ("John", 25, 3000.0, 321321777));
+		employees.add(new Employee ("Ace", 22, 2000.0, 321321444));
+		employees.add(new Employee ("Keith", 35, 4000.0, 321321111));
+		
+		
+		Comparator<Employee> employeeNameComparator = Comparator.comparing(Employee::getName);
+		
+		Collections.sort(employees, employeeNameComparator);
+---------------------------------
+
+dwa sposoby tworzenia list obiektów 
+
+Employee[] sortedEmployeesByName = new Employee[] { new Employee("Ace", 22, 2000, 5924001), new Employee("John", 25, 3000, 9922001), new Employee("Keith", 35, 4000, 3924401) };
+
+oraz klasyczny 
+ArrayList<Employee> employees = new ArrayList<Employee>();
+		employees.add(new Employee ("John", 25, 3000.0, 321321777));
+		employees.add(new Employee ("Ace", 22, 2000.0, 321321444));
+		employees.add(new Employee ("Keith", 35, 4000.0, 321321111));
+-------------------------------------------------------------------------------------------
+
+drukowaine listy obiektów 
+
+jeśli obiekt wygląda jak poniżej, to zawsze musimy nadpisać metodę toString 
+
+public class Employee {
+	String name;
+	int age;
+	double salary;
+	long mobile;
+	
+	@Override
+	public String toString() {
+		 return this.name + " " + String.valueOf(this.age) + " " + String.valueOf(this.salary);
+	}
+-----------------------------------------------------------
+
+komparator, który sortuje odwrotnie 
+Comparator<Employee> komparator = Comparator.comparing(Employee::getName, 
+				(s1, s2) -> { return s1.compareTo(s2); }
+				);
+
+ewentualnie coś takiego 
+
+w comparable po prostu nadpisujemy sobie własny komparator, jak on ma sortować, i wtedy kiedy używamy metody sort() to podajemy tylko listę bez żadnch dodatkowych argumentów.
+A comparing to 2 argumenty i tam po prostu możemy korzystać z gotowych rozwiązań
+
+Comparator<Employee> komparator = Comparator.comparing(Employee::getName);
+		Comparator<Employee> komparatorOdwrocony = komparator.reversed();
+--------------------------------------------------------------------------------------
+natural order po implements Comparable<Employee>
+Comparator<Employee> komparator = Comparator.<Employee> naturalOrder();
+		Collections.sort(employees, komparator);
+
+można też użyć metody reverseOrder();
+-------------------------------------------
+----------------------------------------------------------
+uruchamianie grida na moim komputerze 
+- trzeba pobrać selenium server
+-uruchamimy tam gdzie jest katalog taką komedną 
+- java -jar selenium-server-standalone-3.14.0.jar -role hub
+- najpierw trzeba zarejestrować huba później noda 
+czyli 
+java -jar selenium-server-standalone-3.14.0.jar -role hub
+
+później 
+java -jar selenium-server-standalone-3.14.0.jar -role node -hub http://localhost:4444/grid/register -port 5555
+
+ustawienie ilości przeglądarek
+java -jar selenium-server-standalone-3.14.0.jar -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,version=69.0,maxinstances=1,platform=WINDOWS -port 5555
+
+te komendy można tak samo zczytywać z pliku json 
+java -jar selenium-server-standalone-3.14.0.jar -role node -nodeConfig grid_node.json
+
+ewentualnie ze zmienną 
+-DWebDriver=chrome.driver="location";
+-------------------------
+--------------------------------------------------
+
+uruchomienie testu na gridzie - trzeba tylko podmienić kilka linii i tyle - webdriver na remotewebdriver
+
+public static List<String> moja_funkcja() throws MalformedURLException {
+		//WebDriver driver;
+		String baseUrl;
+		String nodeUrl = "http://192.168.1.6:5556/wd/hub";
+		DesiredCapabilities caps = DesiredCapabilities.chrome();
+		caps.setBrowserName("chrome");
+		caps.setPlatform(Platform.WIN10);
+		RemoteWebDriver driver = new RemoteWebDriver(new URL(nodeUrl), caps);
+		
+		
+		
+		System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		//driver = new ChromeDriver();
+		baseUrl = "http://letskodeit.teachable.com/pages/practice";
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();	
+		
+		driver.get(baseUrl);
+		WebElement ele1 = driver.findElement(By.id("carselect"));
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+można imprelemtnować Comparator (ma metodę compare) oraz Comparable (ma metodę compareTo), w Comparable robimy Override metody compareTo
+
+tworzenie komparator 
+public class Employee{    // tutaj nie ma nic w tej klasie 
+	private int ranking;
+	private String name;
+	private int age;
+
+następnie musimy stworzyć osobną klasę do komparatora 
+public class EmployeeAgeComparator implements Comparator<Employee>{
+
+	@Override
+	public int compare (Employee playerFirst, Employee playerSecond) {
+		return (playerFirst.getAge() - playerSecond.getAge());
+	}	
+}
+
+in następnie w ostateczej klasie wywołujemy ten obiekt komparatora i sortujemy 
+EmployeeAgeComparator komparatorAge = new EmployeeAgeComparator();
+		
+		
+		System.out.println(lista);
+		Collections.sort(lista, komparatorAge);
+		System.out.println(lista);
+		
+-------------------------------------------------------------------------
+
+tworzenie komparator z użyciem lambad, to jest identyczny komparator jak comparing 
+
+Comparator<Employee> komparatorB = (Employee emp1, Employee emp2) ->
+		emp1.getRanking() - emp2.getRanking();
+		
+		
+		System.out.println(lista);
+		Collections.sort(lista, komparatorB);
+-------------------------------------------------------------
+
+konwertowanie tablicy int do listy int 
+int[] lista = {5, 1, 7, 66, 88, 89, 123, 200, 2, 255};
+	
+	List<Integer> lista2 = Ints.asList(lista);
+----------------------------------------------------------
+
+List<Map.Entry<String, ?>> entryList = new List<>(//initialization);
+List<String> stringList = entryList.stream().map(Entry::getKey).collect(Collectors.toList());
+
+---------------
+lista przy drukowaniu jest oznaczana jako {}
+a tablice jako [] - chyba 
+---------------------------------------------------------
+
+Map.Entry<Integer, String> entry to po prostu typ danych 
+jak np 
+String entry 
+--------------------------------------
+
+HashMap<Integer, String> mapa2 = new HashMap<>();
+	    mapa2.put(7, "ala");
+	    mapa2.put(5, "ma");
+	    mapa2.put(6, "kota");
+	    
+	    List<Map.Entry<Integer,String>> listaMap = new ArrayList<>(mapa2.entrySet());    
+	    
+	    Integer[] sortedKeys = new Integer[] {5, 6, 7};
+	    
+	    Collections.sort(listaMap, new Comparator<Entry<Integer, String>>()
+	    {
+	    	@Override
+	    	public int compare(Entry<Integer, String> o1, Entry<Integer, String> o2) {
+	    		return o1.getKey().compareTo(o2.getKey());
+	    	}
+	    	
+	    });
+	    
+	    Map<Integer, String> posortowana = new LinkedHashMap<>();
+	    
+	    for (Map.Entry<Integer, String> entry : listaMap) {
+	    	posortowana.put(entry.getKey(), entry.getValue());
+	    }
+
+----------------------------------------------------------------------
+
+sortowanie tablicy obiektów za pomocą komparatora, sortowanie po imieniu 
+
+ArrayList<Employee> employees = new ArrayList<Employee>();
+		employees.add(new Employee ("John", 25, 3000));
+		employees.add(new Employee ("Ace", 22, 2000));
+		employees.add(new Employee ("Keith", 35, 4000));
+
+public class Employee implements Comparable{
+
+@Override
+	public int compareTo(Object obj) {
+		Employee emp  = (Employee) obj;
+		return getName().compareTo(emp.getName());
+	}
+
+Collections.sort(employees);
+		System.out.println(employees);
+----------------------------------------------------------------
+
+ostateczna zasada: comparator implementujemy w klasie, w której robimy porównanie, czyli 
+
+public class BicycleComparator2 implements Comparator <Bicycle2>{
+	
+	@Override
+	public int compare(Bicycle2 o1, Bicycle2 o2) {
+		return o1.getBrand().compareTo(o2.getBrand());
+	}
+	
+	public static void main (String[] args) {
+		
+		BicycleComparator2 obiekt = new BicycleComparator2();
+
+
+BicycleComparator2 obiekt = new BicycleComparator2();	
+		
+	ArrayList<Bicycle2> lista = new ArrayList<Bicycle2>();
+	
+	lista.add(new Bicycle2 ("ma", 20));
+	lista.add(new Bicycle2 ("ala", 30));
+	lista.add(new Bicycle2 ("ja", 24));
+	
+	ArrayList<Bicycle2> listaPosortowana = new ArrayList<Bicycle2>();
+	
+	listaPosortowana = (ArrayList<Bicycle2>) lista
+	.stream()
+	.sorted( (a,b) ->  obiekt.compare(a, b))
+	.collect(Collectors.toList());
+	
+	System.out.println(listaPosortowana)
+
+
+natomiast implements Comparable robimy w klasie obiektu 
+public class Player implements Comparable<Player> {
+     
+    //...
+    @Override
+    public int compareTo(Player otherPlayer) {
+        return (this.getRanking() - otherPlayer.getRanking());
+    }
+}
+
+--------------------------------------
+warunek? wyrażenie1 : wyrażenie2;
+
+Jak robić streamy ?
+
+https://www.baeldung.com/java-8-streams
+
+Collection<String> kolekcja = Arrays.asList("a", "b", "c");
+	Stream<String> streamKolekcji = kolekcja.stream();
+
+kolejny sposób 
+Stream<String> stream = Stream.of("a", "b", "c");
+
+kolejny sposób 
+String[] tablica = new String[] {"a", "b", "c"};
+		Stream<String> stream = Arrays.stream(tablica);
+
+------
+drukowanie streama 
+Stream<Integer> intStream = Stream.iterate(40, n -> n+2).limit(20); 
+		intStream.forEach(ele -> System.out.println(ele));
+-------------------------------------------------------------
+
+Stream<String> cos = Stream.of("a", "b", "c", "d", "bart").filter(ele -> ele.contains("b"));
+
+
+Stream<String> cos = Stream.of("a", "hhbbb", "c", "d", "bart").filter(ele -> ele.contains("b"));
+		java.util.Optional<String> anyElement = cos.findAny();
+		String ele = anyElement.get();
+---------------------------------------
+
+filtrowanie stream ze słowem return oraz użycie nawiasów
+
+Stream<String> ggg = lista
+				.stream()
+				.filter(  ele -> 
+				{
+				return ele.contains("b");       }
+						
+						);
+-------------------------------------------------------------------------
+
+kolejność wykonywania filter oraz map 
+
+List<String> lista = Arrays.asList("aaaa", "bbb", "ccc");
+		counter = 0;
+		
+		java.util.Optional<String> stream2 = lista.stream().filter(element -> {
+		    System.out.println("filer was called");
+		    return element.contains("c");
+		}).map(element -> {
+			System.out.println("upper case was called");;
+		    return element.toUpperCase();
+		}).findFirst();
+			
+		String ele = stream2.get();
+		System.out.println(ele);
+
+wynik dziłania funkcji to 
+
+filer was called
+filer was called
+filer was called
+upper case was called
+CCC
+-----------------------------------------------
+
+filtrowanie mapy po kluczu, wartości mapowanie stream 
+
+Map<String, String> books = new HashMap<>();
+		books.put("978-0201633610", "Design patterns : elements of reusable object-oriented software");
+		books.put("978-1617291999", "Java 8 in Action: Lambdas, Streams, and functional-style programming");
+		books.put("978-0134685991", "Effective Java");
+		
+		
+		
+		java.util.Optional<String> wynik = books
+				.entrySet()
+				.stream()
+				.filter(ele -> ele.getValue().equals("Effective Java"))
+				.map(Map.Entry::getKey)
+				.findFirst();
+		
+		System.out.println(wynik.get());
+assertEquals(wynik.get(), "Effective Java");
+-------------------------------------------------------------
+
+klasa abstrakcyjna - klasa główna 
+
+public abstract class BaseFileReader {
+
+public abstract String konwertuj (String napis);
+
+public List<String> pobierzListe (List<String> lista) {
+	
+	return 
+	lista
+	.stream()
+	.map(this::konwertuj)
+	.collect(Collectors.toList());
+}
+
+oraz klasa, która dziedziczy 
+
+----------------------
+
+public class LoweCaseFileReader extends BaseFileReader {
+	
+	@Override
+	public String konwertuj (String napis) {
+		return napis.toUpperCase();
+	}
+
+	
+	public static void main (String[] args) {
+		LoweCaseFileReader obiekt = new LoweCaseFileReader();
+		
+		List<String> lista = new ArrayList<String>();
+		lista.add("ala");
+		lista.add("ma");
+		lista.add("kota");
+		
+		System.out.println(obiekt.pobierzListe(lista));
+		
+		
+	}
+}
+
+-----------------------------------------------------------------------------
+
+interface 
+klasa która implementuje interface, to musi też nadpisać metody abstrakcyjne, które są w interfajsie - czyli identycznie jak w klasie abstrakcyjnej 
+
+-----------------------------------------------------------------------------
+
+nauka dziedziczenia na postawie interia.pl
+
+klasa główna interia.pl
+
+public class interiaStronaGlowna {
+	
+	
+public static void main (String[] args) throws InterruptedException {
+	
+	
+	
+		WebDriver driver;
+		String baseUrl;
+		
+			System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+			driver = new ChromeDriver();
+			baseUrl = "https://www.interia.pl/";
+			driver.manage().window().maximize();
+		
+		
+			driver.get(baseUrl);
+			//WebElement loginLink = driver.findElement(By.xpath("//div[@class='calendar-image']"));
+			
+			Thread.sleep(6000);
+			WebElement przejdzDoSerwisu = driver.findElement(By.xpath("//button[@class='rodo-popup-agree']"));
+			przejdzDoSerwisu.click();
+			
+			Thread.sleep(3000);
+			//List<WebElement> moja_lista = driver.findElements(By.xpath("//a[@class='portal-menu-a']"));
+			 //Actions najedz = new Actions(driver);
+			 //najedz.clickAndHold(loginLink).perform();
+			 //Thread.sleep(3000);
+			 //WebElement tekst = driver.findElement(By.xpath("//p[@class='calendar-details-desc']"));
+			  //String toolTipText = tekst.getText();
+			  //System.out.println(toolTipText);
+			  
+			  //if (toolTipText.contains("wystrzelona")) {
+			//	  System.out.println("megaa");
+			  //}
+		
+			  
+			  WebElement motoryzacja = driver.findElement(By.xpath("//a[@title='Moto']"));
+			  Actions actions = new Actions(driver);
+			  actions.moveToElement(motoryzacja);
+			  actions.perform();
+			  motoryzacja.click();
+			  
+			  podstronaMotoryzacja obiektPodstronaMotoryzacja = new podstronaMotoryzacja(driver);
+			  obiektPodstronaMotoryzacja.getMotoryzacjaWiadomosci().kliknijLinkWiadomosci();
+		
+	
+			driver.quit();
+		}
+
+
+}
+------------
+
+podstrona motoryzacja 
+
+public class podstronaMotoryzacja extends webdriverPage{
+
+	private motoryzacjaWiadomosci obiekMotoryzacjaWiadomosci;
+	
+	private String napis;
+	
+	
+//jesli chcemy korzystac z obiektu wyżej, to musimy zrobic getter i setter 
+	public podstronaMotoryzacja(WebDriver driver) {
+		super(driver);
+		obiekMotoryzacjaWiadomosci = new motoryzacjaWiadomosci(driver);
+	}
+	
+	
+	//to działa - to po prostu tworzenie obiektu
+	//motoryzacjaWiadomosci obiekt = new motoryzacjaWiadomosci(driver);
+	
+	
+	//getter
+	public motoryzacjaWiadomosci getMotoryzacjaWiadomosci() {
+		return obiekMotoryzacjaWiadomosci;
+	}
+	
+	//getter
+	public String getNapis() {
+		return napis;
+	}
+		
+	
+	
+	
+}
+---------------------
+
+podstrona wiadomości
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class motoryzacjaWiadomosci extends webdriverPage{
+
+	public motoryzacjaWiadomosci(WebDriver driver) {
+		super(driver);
+	}
+
+	
+	
+	public void kliknijLinkWiadomosci () throws InterruptedException {
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//li/a[@href='/wiadomosci']")).click();
+		Thread.sleep(5000);
+	}
+	
+
+}
+
+------------------------------
+klasa webdriver 
+
+import org.openqa.selenium.WebDriver;
+
+public class webdriverPage {
+	
+	protected final WebDriver driver;
+	
+	public webdriverPage (WebDriver driver) {
+		this.driver = driver;
+	}
+	
+	
+
+}
+------------------------------------------------------------
+
+enum oraz tworzenie obiektów w enumie
+
+
+public class Pizza {
+    
+	public enum pizzaStatus {
+		ORDERED("zamowiona"),
+		READY("gotowa"),
+		DELIVERED("dostarczona");
+		
+		public String status;
+		
+		pizzaStatus (String status) {
+			this.status = status;
+		}
+		
+		public String getValue () {
+			return status;
+		}
+		
+	}
+
+
+------oraz tworzenie obiektu bez słowa new 
+
+public class PizzaEnum extends Pizza{
+	
+	public String wywolaj (pizzaStatus status) {
+		return status.getValue();
+	}
+	
+	public static void main (String[] args) {
+		
+		PizzaEnum obiekt = new PizzaEnum();
+		System.out.println(pizzaStatus.ORDERED.getValue());
+		
+		String ala = "dostarczona";
+		
+		pizzaStatus obiekEnuma = pizzaStatus.DELIVERED;
+		
+		System.out.println(obiekEnuma.getValue());
+
+	}
+
+
+}
+
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+
+JENKINS - KONFIGURACJA 
+
+uruchamianie jenkins 
+- w folderze z plikiem jenkins.war wpisuję w git bash 
+ java -jar jenkins.was 
+
+później wpisuję 
+http://localhost:8080/
+
+logowanie 
+admin
+admin
+
+- naciskamy:
+manage jenkins 
+configure system 
+
+następnie w sekcji global propierties ustawiamy 
+JAVA_HOME
+C:\Program Files\Java\jdk1.8.0_192
+oraz 
+MAVEN_HOME
+C:\Users\Bartek\eclipse-workspace\apache-maven-3.3.9-bin\apache-maven-3.3.9
+
+trzeba odznaczyć checkbox install automatically 
+
+następnie jenkins url 
+http://localhost:8080/
+
+- do jenkinsa trzeb doinstlować git plugin - dlatego, że jenkins musi wiedzieć, z jakiego repozytorium brać kod
+- do git w pluginach też musimy podać ściężkę do git.exe na moim dysku  
+
+--------------------------------------------------------------------------------------------
+- jenkins - tworzenie poejektu
+- klikamy nowy projekt -> freestyle projekt lub freestyle projekt 
+
+w Build wybieram invoke top level maven targets i tam wybiermay wersje mavena, którą mamy zainstalowaną 
+
+oraz najważniejsze w Goals wpisujemy nazwę profilu do uruchomienia !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+czyli jeśli stworzyliśmy sobie nowy projekt w pracy np SIT_MX to w tym Goals muszę podać nazwę profilu yml, który ma jenkins uruchamiać z POMA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+- w repozytorium kodu wybieramy Git, to znaczy, że kod, który będzie się uruchamiał przez Jenkinsa będzie pobierany z Gita, a nie z mojego lokalnego komputera
+- wklejamy adres do mojego repozytorium z rozszerzeniem git, czyli 
+https://github.com/BartekSelenium/bartselenium.git
+
+jeśli moje wszystkie pliki są w katalogu 
+C:\Users\Bartek\eclipse-workspace\projektMavenBartek
+
+to cały ten katalog puszuje do githuba (w tym katalogu jest pom oraz src)
+
+jesteśmy w tym katalogu i musimy połączyć się z moim zdalnym repozytorium za pomocą komendy 
+git remote add origin https://github.com/BartekSelenium/bartselenium.git
+
+oraz kikamy zaawansowane i wybieramy pom 
+C:\Users\Bartek\eclipse-workspace\flightsbooking\pom.xml
+oraz klikamy save oraz build now w lewej kolumnie (lub uruchom po polsku)
+
+w logach konsoli po uruchomieniu testu (console output)
+możemy przeycztać między innymi, że kod zaciągany jest z githuba, a nie lokalnie
+"Fetching changes from the remote Git repository"
+
+
+- jak ustawić czas, kiedy jenkins ma uruchamiać testy ?
+- wchodzimy w projekt, klikamy configure, build trigger (wyzwalacze zadania)
+oraz buduj cyklicznie
+
+
+
+******************************************************************8
+Scheduling Builds 9/24/15 10:22 PM
+Minutes – Minutes in an hour (0-59)
+Hours – Hours in a day (0-23)
+DayMonth – Days in a month (1-31)
+Month – Months in a year (1-12)
+DayWeek – Day of week (0-7), 0 and 7 are Sunday
+Examples:
+
+This will run every minute, all the time:
+* * * * *
+
+This will run at minute zero, every hour (at hourly interval):
+0 * * * *
+
+This will also run hourly but run at minute 15 instead (00:15, 01:15, 02:15):
+15 * * * *
+
+This will run once a day, at 2:30am:
+30 2 * * *
+
+This will run once a month, on the second day of the month at midnight
+(January 2nd 12:00am, February 2nd 12:00am):
+0 0 2 * *
+
+This will run every hour on Mondays:
+0 * * * 1
+
+You can use multiple numbers separated by commas. This will run three
+times every hour, at minutes 0, 10 and 20:
+0,10,20 * * * *
+
+Division operator is also used. This will run every 10 minutes:
+*/10 * * * *
+
+Dash can be used to specify a range. This will run once every hour between
+5:00 am and 10:00 am:
+0 5-10 * * *
+********************************************************************88
+
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+git - repository url 
+https://github.com/BartekSelenium/bartselenium.git
+
+adres do mojego gita url 
+https://github.com/BartekSelenium/bartselenium
+
+
+
+- tworzymy projekt, następnie klikamy zakladkę general - > repozytorium kodu i tam musi być wybrany git
+oraz musi być wpisany url do repozytorium na githubie 
+
+---------------------------
+GIT tutorial 
+klikam w eclipse create new -> maven project -> wybieram domyślny archetyp quickstart 1.1
+
+- po stworzeniu projektu tworzy się struktura plików, 2 foldery
+1 - src/main/java
+2 - src/test/java 
+ 
+stworzenie projektu można zrobić w konsoli komendą 
+
+- mvnrepository.com - tam są dependencje do pobrania
+
+np w tym mvn repozytorium szukamy wersji selenium jaką mam zainstalowaną i kopiujemy dependencje do 
+
+pom.xml 
+
+np 
+
+Selenium Java » 3.4.0
+
+https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java/3.4.0
+
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>3.4.0</version>
+</dependency>
+
+- mvn przy każdym uruchomieniu testu najpierw czyta wszystko z pom.xml i pobiera wskazane dependencje 
+- katalog m2 to jest lokalne repozytorium mavena na moim komputerze
+
+<artifactId>projektMavenBartek</artifactId> to nazwa peojektu 
+
+<version>0.0.1-SNAPSHOT</version> to wersja poma
+
+- po dodaniu wszystkich dependencji otwieram git basha tam, gdzie jest mój projekt 
+
+czyli np 
+C:\Users\Bartek\eclipse-workspace\projektMavenBartek
+
+i wpisuję 
+
+mvn dependency:sources 
+
+i wtedy pobiera mi wszystkie dependencje, które wskazałem w pomie (chyba na dysk lokalny)
+
+- później można wpisać
+  mvn test
+a później 
+
+mvn dependency:resolve -DClassifier=javadoc (to chyba doinstalowanie podpowiedzi w javie ?)
+
+- jak chcę usunąć folder target do daję coś takiego:
+- mvn post-clean
+
+- wszystkie komendy mvn claen install itd czytają pliki pom.xml
+
+- mvn -test uruchamia testy 
+
+- mvn install zapisuje projekt w formacie .jar do lokalnego repozytorium, czy u mnie jest to 
+C:\Users\Bartek\.m2\repository\maven\Bartek\projektMavenBartek\0.0.1-SNAPSHOT
+
+- mvn test (uruchamia przeglądarkę z testem )
+- log 4 j zapisuje logi przy komendzie mvn test itd 
+
+aby mieć logi musimy w naszym głónym pliku dodać linijkę z log 4 j
+
+@BeforeClass
+	  public void beforeClass() {
+		  System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		  PropertyConfigurator.configure("log4j.properties");
+			driver = new ChromeDriver();
+			obiekt = new elementy(driver);
+
+-----------------
+
+jeśli chcemy korzystać z profili to trzeba zintegrować maven z test ng 
+
+trzeba pobrać dependencje i wkleić pod dependencjami w pom
+
+<build>
+  <plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.18.1</version>
+						<configuration>
+							<suiteXmlFiles>
+								<suiteXmlFile>regression.xml</suiteXmlFile>
+							</suiteXmlFiles>
+						</configuration>
+					</plugin>
+				</plugins>
+	</build>
+
+----------------------------------------
+
+następnie w pomie ustalamy co chcemy uruchamiać mavenem,
+w pomie mamy taką linijkę:
+<suiteXmlFile>testng.xml</suiteXmlFile>
+
+a to oznacza, że uruchamia się plik testng.xml (może mieć dowolną nazwę) a w nim mamy zdefiniowaną linię 
+
+<class name="maven.Bartek.projektMavenBartek.KlasatestujacaTest"> </class>
+
+czyli ta właśnie klasa się uruchomi
+
+-----------------
+natomiast najważniejsze to uruchamianie profili - np w jednym profilu mamy środowisko sit a w drugim dit, lub w jednym profilu ruchamia nam się interia a w drguim onet.pl.
+
+- tak więc modyfikujemy nieco powyższy kod - to co powyżej wklejamy do środka profilu
+
+- profile są poniżej dependencji 
+
+</dependencies>
+
+	<profiles>
+		<profile>
+			<id>interia</id>
+			
+			<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>interia.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+			
+		</profile>
+
+-----------------------------------------------
+w pom.xml mam ustawione profile, ale sami musimy zdecydować komendą mavena, które profile się uruchomią 
+----------------------------------------------------------------------------
+a teraz mvn test -Pinteria (profile <id> to nazwa profilu)
+-------------
+stopowanie jenkins - to z command prompt 
+cd C:\Program Files (x86)\Jenkins
+jenkins.exe stop
+-----------------------------
+
+echo $JAVA_HOME to drukowanie zmiennej środowiskowej w bashu
+------------------------------------------
+
+nadpisanie metody toString z obiektem z innej klasy
+public class Employee {
+	
+	private String name;
+	private Car samochod; // to jest zaimportowane z innej klasy
+	
+	public Employee (String name, Car car) {
+		this.name = name;
+		this.samochod = car;
+	}
+	
+	@Override
+	public String toString() {
+		return this.name.toString() + String.valueOf(samochod);
+	}
+----------------------------------
