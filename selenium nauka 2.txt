@@ -1741,3 +1741,23 @@ public class Employee {
 		return this.name.toString() + String.valueOf(samochod);
 	}
 ----------------------------------
+
+zamiana powtarzających się znaków na gwiazdkę 
+			char[] tab = new char[] {'b', 'a', 'a', 'a', 'z', 'a'};
+			
+			char change;
+			
+			
+			for (int i=0; i<tab.length-1; i++) {
+				if (tab[i] == tab[i+1]) {
+					change = tab[i]; 
+					
+					for (int j=i; tab[j] == change; j++) { 
+						if (tab[j] == change) {
+							tab[j] = '*';
+						}
+					}
+					
+				}
+			}
+----------------------------------------------------------------------------------------------------------------
