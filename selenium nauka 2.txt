@@ -1630,7 +1630,7 @@ mvn dependency:resolve -DClassifier=javadoc (to chyba doinstalowanie podpowiedzi
 - jak chcę usunąć folder target do daję coś takiego:
 - mvn post-clean
 
-- wszystkie komendy mvn claen install itd czytają pliki pom.xml
+- wszystkie komendy mvn clean install itd czytają pliki pom.xml
 
 - mvn -test uruchamia testy 
 
