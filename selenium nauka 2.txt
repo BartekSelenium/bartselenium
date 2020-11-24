@@ -1742,22 +1742,231 @@ public class Employee {
 	}
 ----------------------------------
 
-zamiana powtarzających się znaków na gwiazdkę 
-			char[] tab = new char[] {'b', 'a', 'a', 'a', 'z', 'a'};
+interfejs funkcyjny Funcion<String, String>
+
+public class MetodaGlowna {
+	
+	public static List<Map<String, String>> zamieniaj (List<Map<String, String>> listaPrzeslana, Function<String, String> parser) {
+
+		return listaPrzeslana
+				.stream()
+				.map(ele -> ele.entrySet()
+						.stream()
+						.collect(Collectors.toMap(k -> parser.apply(k.getKey()),
+								v -> parser.apply(v.getValue()))))
+				.collect(Collectors.toList());
+		
+	}
+	
+	
+	public static String konwertujUpperCase(String napis) {
+		return napis.toUpperCase();
+	}
+	
+	public static String konwertujLowerCase(String napis) {
+		return napis.toLowerCase();
+	}
+	
+	
+
+}
+
+
+oraz klasa, która używa tych metod 
+
+public class przesylamListy extends MetodaGlowna{
+	
+	public static void main (String[] args) {
+	Map<String, String> lista1 = new HashMap<String, String>();
+	Map<String, String> lista2 = new HashMap<String, String>();
+
+	lista1.put("jeden", "ala");
+	lista1.put("dwa", "ma");
+	lista1.put("trzy", "kota");
+	
+	lista2.put("cztery", "ja");
+	lista2.put("piec", "tez");
+	lista2.put("szesc", "ale psa");
+	
+	List<Map<String, String>> listaMap = new ArrayList<Map<String, String>>();
+	listaMap.add(lista1);
+	listaMap.add(lista2);
+	
+	List<Map<String, String>> listaMapWynikowa = new ArrayList<Map<String, String>>();
+	
+	listaMapWynikowa = zamieniaj (listaMap, MetodaGlowna::konwertujUpperCase);
+	
+	System.out.println(listaMapWynikowa);
+	
+	}
+
+-----------------------------------------------------------------------------------------------
+
+
+instalacja lombok 
+plik lombok.jar mam w katalogu eclipse workspace 
+w command line wpisuję java -jar lombok.jar
+
+następnie trzeba dodać dependencję do pom.xml
+
+<dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.4</version>
+        <scope>provided</scope>
+    </dependency>
+-------------------------------------------------------------
+
+stream z pętlą if oraz użycie nawiasów
+
+List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+	List<Integer> tablica2 = new ArrayList<Integer>();
+	
+	
+			ints
+			.stream()
+			.forEach(ele -> {
+				
+				if (ele % 3 == 0) {
+					tablica2.add(ele);
+				}
+				
+			}
 			
-			char change;
-			
-			
-			for (int i=0; i<tab.length-1; i++) {
-				if (tab[i] == tab[i+1]) {
-					change = tab[i]; 
+						
+					);
+---------------------------------------------------------------
+
+filtorwanie int, dzielenie modulo
+
+List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+	List<Integer> tablica2 = new ArrayList<Integer>();
+	
+	tablica2 = ints
+			.stream()
+			.filter(ele -> ele.intValue() % 2 == 0)
+			.collect(Collectors.toList());
+
+--------------------------------------------
+Map<String, Integer> salaries = new HashMap<>();
+	Map<String, Integer> salaries2 = new HashMap<>();
+	salaries.put("John", 40000);
+	salaries.put("Freddy", 30000);
+	salaries.put("Samuel", 50000);
+	
+	
+	Optional<Integer> wynik;
+	
+	wynik = salaries
+	.entrySet()
+	.stream()
+	.filter(ele -> ele.getKey().equals("Freddy"))
+	.map(ele -> ele.getValue() + 2000)
+	.findFirst();
+-------------------------------------------------
+
+metody generyczne, czyli takie, które mogą przyjąć argumenty różnych typów, w zależności co do nich podamy
+
+public class MetodaGlowna {
+	
+	public <S, I> List<S> konwertuj (List<I> lista, Function<I, S> parser) {
+
+		return lista
+				.stream()
+				.map(parser)
+				.collect(Collectors.toList());
+		
+	}
+
+}
+
+oraz wywołanie 
+
+public class WywolanieMetody extends MetodaGlowna{
+	
+	public static String parsujBart (Integer przeslany) {
+		return przeslany.toString();
+	}
+	
+	public static void main (String[] args) {
+		
+		List<Integer> listaBart = Arrays.asList(1,2,3,4,5,6,6,6);
+		
+		System.out.print(listaBart);
+		
+		WywolanieMetody ob = new WywolanieMetody();
+		
+		List<String> lis = ob.konwertuj(listaBart, WywolanieMetody::parsujBart);
+		
+		System.out.println(lis);
+		
+	}
+--------------------------------------------------------------------
+
+interfejs funkcyjny 
+Function<Integer, String> intDoString = e -> e.toString();
+	
+	Integer liczba = 5;
+	
+	intDoString.apply(liczba);
+	
+	assertEquals("5", intDoString.apply(liczba));
+
+ewentualnie można napisać coś takiego 
+Function<Integer, String> intDoString = Object::toString;
+
+łącznie 
+Function<Integer, String> intDoString = e -> e.toString();
+	
+	Function<String, String> quote = s -> "'" + s + "'";
+	Function<Integer, String> quote2 = quote.compose(intDoString);
+najpierw jest wywołanie (intDoString) a później quotee
+--------------------------------------------------------------
+
+supplier to inna forma function 
+public double funkcja (Supplier<Double> wartosc) {
+			return Math.pow(wartosc.get(), 2);
+		}
+do supplier podajemy tylko jeden argument, ktory jest typem zwracanej wartości
+
+===================================================
+
+Map<String, Integer> salaries = new HashMap<>();
+			Map<String, Integer> salaries2 = new HashMap<>();
+			salaries.put("John", 40000);
+			salaries.put("Freddy", 30000);
+			salaries.put("Bartek", 50000);
+			 
+					salaries
+					.entrySet()
+					.stream()
+					.forEach(ele -> salaries2.put(ele.getKey()+"zzz", ele.getValue()+44));
 					
-					for (int j=i; tab[j] == change; j++) { 
-						if (tab[j] == change) {
-							tab[j] = '*';
+					
+					
+			System.out.println(salaries2);
+=============================================================================
+
+uzycie nawiasów klamrowych w stream
+
+Map<String, Integer> salaries = new HashMap<>();
+			Map<String, Integer> salaries2 = new HashMap<>();
+			salaries.put("John", 40000);
+			salaries.put("Freddy", 30000);
+			salaries.put("Bartek", 50000);
+			 
+					salaries
+					.entrySet()
+					.stream()
+					.forEach(ele -> {
+						if (ele.getKey().contains("B")) {
+							salaries2.put(ele.getKey(), ele.getValue()+33);
+						}
+						else {
+							salaries2.put(ele.getKey(), ele.getValue());
 						}
 					}
 					
-				}
-			}
-----------------------------------------------------------------------------------------------------------------
+						);
+					
+=========================================================================================
