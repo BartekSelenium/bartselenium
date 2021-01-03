@@ -1970,3 +1970,62 @@ Map<String, Integer> salaries = new HashMap<>();
 						);
 					
 =========================================================================================
+
+
+deklaracja tablicy Stringów, zapis 
+String[] tablicaStringow = new String[] {};
+========================================================================================
+
+
+metoda generyczna, function, przyklad 
+
+public class GenericsFramework {
+	
+	public <S, I> List<I> zamieniajNaListe (S[] tablica, Function<S, I> funkcja) {
+		return Arrays
+				.stream(tablica)
+				.map(funkcja)
+				.collect(Collectors.toList());
+			
+	}
+	
+	public static Integer funkcjaDoInt (String element) {
+		return Integer.valueOf(element);
+	}
+	
+	public String funkcjaDoString (Integer element) {
+		return element.toString();
+	}
+	
+
+}
+
+oraz wywołanie w drugiej klasie 
+
+public class GenericsWywolanie {
+	
+	public static void main (String args[]) {
+	
+		GenericsFramework obiekt = new GenericsFramework();
+		
+		
+	List<Integer> listaIntow = new ArrayList<Integer>();
+	
+	String[] tablicaStringow = new String[] {"1", "2", "3"};
+	
+	for (int i=0; i<tablicaStringow.length; i++) {
+		System.out.println(tablicaStringow[i]);
+	}
+	
+	//pobiera tablice stringów, a zwraca liste intów
+	
+	listaIntow = obiekt.zamieniajNaListe(tablicaStringow, GenericsFramework::funkcjaDoInt);
+	
+	System.out.println(listaIntow);
+
+	}
+	
+
+}
+
+==============================================================================================
