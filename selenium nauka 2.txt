@@ -2029,3 +2029,880 @@ public class GenericsWywolanie {
 }
 
 ==============================================================================================
+
+stream po liście obiektów 
+
+public class Item {
+	
+	private int value;
+	
+	public int getValue() {
+		return value;
+	}
+	
+	public Item (int value) {
+		this.value = value;
+	}
+	
+	public boolean isQualified() {
+		return value % 2 == 0;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(value);
+	}
+
+
+
+oraz wywołanie 
+
+public class WywolanieItem {
+	
+	public static boolean isQualifiedBart(Item item) {
+		return item.getValue() % 2 == 0;
+	}
+	
+	public static void main (String[] args) {
+		
+		List<Item> listaObiektow = new ArrayList<>();
+		
+		for (int i=0; i<10; i++) {
+			listaObiektow.add(new Item(i));
+		}
+	
+		
+		List<Item> nowaLista = new ArrayList<>();
+		
+				listaObiektow
+				.stream()
+				.filter(ele -> isQualifiedBart(ele))
+				.forEach(ele -> nowaLista.add(ele));
+		
+				
+		System.out.println(nowaLista);
+		listaObiektow.removeAll(nowaLista);
+		System.out.println(listaObiektow);
+		
+		
+		
+		
+	}
+
+=====================================================================
+
+nauka postman 
+
+https://rahulshettyacademy.com/maps/api/place/add/json?key=qaclick123
+
+package apiTesting;
+
+package apiTesting;
+
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+
+
+import static org.hamcrest.Matchers.*;
+
+import static io.restassured.RestAssured.*;
+
+package apiTesting;
+
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+
+
+import static org.hamcrest.Matchers.*;
+
+import static io.restassured.RestAssured.*;
+
+public class TestOne {
+
+	public static void main(String[] args) {
+		
+		RestAssured.baseURI = "https://rahulshettyacademy.com/";
+		String response = given().log().all().queryParam("key", "qaclick123").header("Content-Type", "application/json")
+		.body(Pliki.zwrocBody())
+		.when().post("maps/api/place/add/json")
+		.then().log().all().assertThat().statusCode(200).body("scope", equalTo("APP"))
+		.header("server", "Apache/2.4.18 (Ubuntu)").extract().response().asString();
+		
+		System.out.println("Wydrukowana odpowiedz " +response);
+		
+		JsonPath js=new JsonPath(response);
+		String numer_id = js.getString("place_id");
+		
+		
+		//zmiana wartości 
+		
+		String nowy_adres = "ala ma kota";
+		
+		System.out.println("AKTUALIZACJA zmiana wartosci !!!!    ");
+		given().log().all().queryParam("key", "qaclick123").header("Content-Type", "application/json")
+		.body("{\r\n" + 
+				"\"place_id\":\""+numer_id+"\",\r\n" + 
+				"\"address\":\""+nowy_adres+"\",\r\n" + 
+				"\"key\":\"qaclick123\"\r\n" + 
+				"}\r\n" + 
+				"")
+		.when().put("maps/api/place/update/json")
+		.then().log().all().assertThat().statusCode(200);
+		
+	 
+		
+		//get place
+		
+		System.out.println("TO JEST GET !!!!!");
+		
+		String toJestGet = given().log().all().queryParam("key", "qaclick123").queryParam("place_id", numer_id)
+		.when().get("maps/api/place/get/json")
+		.then().log().all().assertThat().statusCode(200).extract().response().asString();
+		
+		System.out.println("to jest get odpowiedz " +toJestGet);
+		JsonPath jsTwo=new JsonPath(toJestGet);
+		String adresGet = jsTwo.getString("address");
+		System.out.println("to jest get odpowiedz ostatnia " +adresGet);
+		
+	}
+
+}
+
+
+===================================
+
+zmiana wartości w request z uzyciem metody PUT 
+da556fc91c5801fae09d9a3298ee9b65
+
+to jest header do put 
+
+{
+"place_id":"71e2551a5eb2b116f6fca8e1332144d8",
+"address":"70ALA  ALA USA",
+"key":"qaclick123"
+}
+
+
+jak robimy get to jest coś takiego w adresie 
+https://rahulshettyacademy.com/maps/api/place/update/json?key=qaclick123&place_id=da556fc91c5801fae09d9a3298ee9b65
+
+do params dopisujemy place_id z wartością i to się automatycznie dopisuje do adresu
+
+
+JSON nauka 
+
+{
+
+"dashboard": {
+
+"purchaseAmount": 910,
+
+"website": "rahulshettyacademy.com"
+
+},
+
+"courses": [
+
+{
+
+"title": "Selenium Python",
+
+"price": 50,
+
+"copies": 6
+
+},
+
+{
+
+"title": "Cypress",
+
+"price": 40,
+
+"copies": 4
+
+},
+
+{
+
+"title": "RPA",
+
+"price": 45,
+
+"copies": 10
+
+}
+
+]
+
+}
+
+
+aby drukować z tego json wartości robimy coś takiego 
+JsonPath js = new JsonPath(Pliki.cenaKursu());
+	
+	System.out.println(js.getInt("courses.size()"));
+
+i to zwraca 3 
+
+oraz 
+
+System.out.println(js.getInt("dashboard.purchaseAmount"));
+
+System.out.println(js.getString("courses.get(0).title"));
+
+drukowanie w pętli tytułów 
+for (int i=0; i<count; i++) {
+		String zmienna = js.getString("courses["+i+"].title");
+		System.out.println("zmienna "+zmienna);
+	}
+============================================================
+
+
+public static void main(String[] args) {
+	
+	JsonPath js = new JsonPath(Pliki.cenaKursu());
+	
+	int count = js.getInt("courses.size()");
+	
+	System.out.println(js.getString("courses.get(0)"));
+	
+	int suma = 0 ;
+	for (int i=0; i<count; i++) {
+		int ilosc = js.getInt("courses["+i+"].copies");
+		System.out.println("zmienna "+ilosc);
+		int cena = js.getInt("courses["+i+"].price");
+		System.out.println("cena ");
+		suma = suma + (ilosc*js.getInt("courses["+i+"].price"));
+	}
+	
+	Assert.assertEquals(suma+1, js.getInt("dashboard.purchaseAmount"));
+	}
+
+============================================
+
+test ng plus parametry w body 
+@Test
+	public void addBook() {
+		
+		RestAssured.baseURI = "http://216.10.245.166";
+		
+		String response = given().log().all().header("content-Type", "application/json")
+		.body(AddBodyBook.addBody("ala", "ma"))
+		.when().post("/Library/Addbook.php")
+		.then().log().all().assertThat().statusCode(200)
+		.extract().response().asString();
+		
+		JsonPath js = new JsonPath(response);
+		
+		String id = js.getString("ID");
+		System.out.println(id);
+		
+	}
+
+=====================================================
+
+
+wysyłanie body z pliku 
+
+RestAssured.baseURI = "https://rahulshettyacademy.com/";
+		String response = given().log().all().queryParam("key", "qaclick123").header("Content-Type", "application/json")
+		.body(new String(Files.readAllBytes(Paths.get("C:\\Users\\Bartek\\Desktop\\addPlace.json"))))
+		.when().post("maps/api/place/add/json")
+		.then().log().all().assertThat().statusCode(200).body("scope", equalTo("APP"))
+		.header("server", "Apache/2.4.18 (Ubuntu)").extract().response().asString();
+		
+		System.out.println("Wydrukowana odpowiedz " +response);
+		
+		//ReusableMethods.jSon(response, "place_id");
+		JsonPath js=new JsonPath(response);
+		String numer_id = js.getString("place_id");
+
+============================================================
+
+
+{ "instructor": "RahulShetty", "url": "rahulshettycademy.com", "services": "projectSupport", "expertise": "Automation", "courses": { "webAutomation": [ { "courseTitle": "Selenium Webdriver Java", "price": "50" }, { "courseTitle": "Cypress",                "price": "40"            },            {                "courseTitle": "Protractor",                "price": "40"            }        ],        "api": [            {                "courseTitle": "Rest Assured Automation using Java",                "price": "50"            },            {                "courseTitle": "SoapUI Webservices testing",                "price": "40"            }        ],        "mobile": [            {                "courseTitle": "Appium-Mobile Automation using Java",                "price": "50"            }        ]    },    "linkedIn": "https://www.linkedin.com/in/rahul-shetty-trainer/"}
+
+========================================================
+
+
+package pojo;
+
+import static io.restassured.RestAssured.*;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
+import io.restassured.path.json.JsonPath;
+
+public class AuthTest {
+	
+	public static void main(String[] args) throws InterruptedException {
+		
+		System.setProperty("webdriver.chrome.driver", "C://Users//Bartek//eclipse-workspace/chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+driver.get("https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email&auth_url=https://accounts.google.com/o/oauth2/v2/auth&client_id=692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com&response_type=code&redirect_uri=https://rahulshettyacademy.com/getCourse.php&state=verifyfjdss");
+		
+		driver.findElement(By.cssSelector("[type='email']")).sendKeys("apitestbart@gmail.com");
+		driver.findElement(By.cssSelector("[type='email']")).sendKeys(Keys.ENTER);
+		Thread.sleep(3000);
+		driver.findElement(By.cssSelector("[type='password']")).sendKeys("costam22");
+		driver.findElement(By.cssSelector("[type='password']")).sendKeys(Keys.ENTER);
+		Thread.sleep(5000);
+		String url=driver.getCurrentUrl();
+		System.out.println(url);
+		String partialcode=url.split("code=")[1];
+		String code=partialcode.split("&scope")[0];
+		
+		System.out.println("kod BART !! "+code);
+		
+		
+		
+		String access_token_response = given().urlEncodingEnabled(false)
+				.queryParam("code", code)
+				.queryParam("client_id", "692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com")
+				.queryParam("client_secret", "erZOWM9g3UtwNRj340YYaK_W")
+				.queryParam("redirect_uri", "https://rahulshettyacademy.com/getCourse.php")
+				.queryParam("grant_type", "authorization_code")
+				.when().log().all()
+				.post("https://www.googleapis.com/oauth2/v4/token")
+				.asString();
+		
+		System.out.println("access token response BART !!!! "+access_token_response);
+		
+		JsonPath js = new JsonPath(access_token_response);
+		String access_token = js.getString("access_token");
+		
+		System.out.println("access token BART !!!!! "+access_token);
+	
+	AllValues allValuesClass = given().queryParam("access_token", access_token)
+			.expect().defaultParser(Parser.JSON)
+	.when()
+	.get("https://rahulshettyacademy.com/getCourse.php")
+	.as(AllValues.class);
+	
+			System.out.println(allValuesClass.getInstructor());
+	
+	}
+}
+============================================================================
+
+to jest dokładnie to, co zwrócił endpoint po przesłaniu access_token
+
+{ "instructor": "RahulShetty", "url": "rahulshettycademy.com", "services": "projectSupport", "expertise": "Automation",
+"courses": { "webAutomation": [ { "courseTitle": "Selenium Webdriver Java", "price": "50" }, { "courseTitle": "Cypress",
+"price": "40"
+},
+{
+"courseTitle": "Protractor",
+"price": "40"
+}
+],
+"api": [
+{
+"courseTitle": "Rest Assured Automation using Java",
+"price": "50"
+},
+{
+"courseTitle": "SoapUI Webservices testing",
+"price": "40"
+}
+],
+"mobile": [
+{
+"courseTitle": "Appium-Mobile Automation using Java",
+"price": "50"
+}
+]
+},
+"linkedIn": "https://www.linkedin.com/in/rahul-shetty-trainer/"
+}
+
+=================================
+
+serializacja 
+przesyłanie body z obiektu 
+
+
+	public static void main(String[] args) {
+		
+		List<String> lista = Arrays.asList("ala", "ma");
+		
+		Location locationObiekt = new Location();
+		locationObiekt.setLat(-38.383494);
+		locationObiekt.setLng(33.427362);
+		
+		
+		AddPlace place = new AddPlace();
+		place.setAccuracy(50);
+		place.setAddress("29, side layout, cohen 09");
+		place.setLanguage("French");
+		place.setLocation(locationObiekt);
+		place.setPhone_number("(+91) 983 893 3937");
+		place.setName("Bartek");
+		place.setTypes(lista);
+		place.setWebsite("www.bart.pl");
+		
+		
+		
+		RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		String response = given()
+		.queryParam("key", "qaclick123")
+		.body(place)
+		.when()
+		.post("/maps/api/place/add/json")
+		.then().assertThat().statusCode(200)
+		.extract().response().asString();
+		
+		System.out.println(response);
+		
+	}
+
+=======================================
+
+kompletny i dziaajcy test, ale jeszcze body jest w stepdefie a tak byc nie powinno 
+
+package stepDefs;
+
+import io.cucumber.java.PendingException;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import static io.restassured.RestAssured.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import static org.junit.Assert.*;
+
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
+import pojo.AddPlace;
+import pojo.Location;
+
+public class AddPlaceStepsDefs {
+	
+	RequestSpecification urlPlusParam;
+	RequestSpecification urlPlusParamPlusBody;
+	
+	ResponseSpecification code200;
+	Response postPlusResource;
+	
+	
+	
+	@Given("^Add place body payload$")
+	public void add_place_body_payload() throws Throwable {
+				
+		
+		List<String> lista = Arrays.asList("ala", "ma");
+		
+		Location locationObiekt = new Location();
+		locationObiekt.setLat(-38.383494);
+		locationObiekt.setLng(33.427362);
+		
+		
+		AddPlace place = new AddPlace();
+		place.setAccuracy(50);
+		place.setAddress("29, side layout, cohen 09");
+		place.setLanguage("French");
+		place.setLocation(locationObiekt);
+		place.setPhone_number("(+91) 983 893 3937");
+		place.setName("Bartek");
+		place.setTypes(lista);
+		place.setWebsite("www.bart.pl");
+		
+		
+		
+		RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		urlPlusParam = new RequestSpecBuilder()
+				.setBaseUri("https://rahulshettyacademy.com")
+				.addQueryParam("\"key\", \"qaclick123\"")
+				.setContentType(ContentType.JSON)
+				.build();
+		
+		code200 = new ResponseSpecBuilder()
+				.expectStatusCode(200)
+				.expectContentType(ContentType.JSON)
+				.build();
+		
+		urlPlusParamPlusBody = given().spec(urlPlusParam)
+				.body(place);
+	}
+
+	@When("^user calls \"([^\"]*)\" api with Post request$")
+	public void user_calls_api_with_Post_request(String arg1) throws Throwable {
+
+		postPlusResource = urlPlusParamPlusBody.when().post("/maps/api/place/add/json").
+				 then().spec(code200).extract().response();
+	}
+
+	@Then("^the response code is (\\d+)$")
+	public void the_response_code_is(int expectedCode) throws Throwable {
+	   
+		assertEquals(postPlusResource.getStatusCode(), expectedCode);
+	}
+
+	@Then("^\"([^\"]*)\" in response body is \"([^\"]*)\"$")
+	public void in_response_body_is(String expectedKey, String expectedValue) throws Throwable {
+	    
+		String responseString = postPlusResource.asString();
+		JsonPath js = new JsonPath(responseString);
+		assertEquals(js.getString(expectedKey), expectedValue);
+		
+	}
+	
+
+}
+
+==============================================================
+
+możemy też przenieść body do innej klasy i wtedy nie ma go już w step defs 
+
+package stepDefs;
+
+import io.cucumber.java.PendingException;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import static io.restassured.RestAssured.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import dane.BodyDoWyslania;
+
+import static org.junit.Assert.*;
+
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
+import pojo.AddPlace;
+import pojo.Location;
+
+public class AddPlaceStepsDefs {
+	
+	RequestSpecification urlPlusParam;
+	RequestSpecification urlPlusParamPlusBody;
+	
+	ResponseSpecification code200;
+	Response postPlusResource;
+	
+	BodyDoWyslania bodyDoWyslania;
+	
+	
+	@Given("^Add place body payload$")
+	public void add_place_body_payload() throws Throwable {
+				
+		
+		
+		RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		urlPlusParam = new RequestSpecBuilder()
+				.setBaseUri("https://rahulshettyacademy.com")
+				.addQueryParam("\"key\", \"qaclick123\"")
+				.setContentType(ContentType.JSON)
+				.build();
+		
+		code200 = new ResponseSpecBuilder()
+				.expectStatusCode(200)
+				.expectContentType(ContentType.JSON)
+				.build();
+		
+		urlPlusParamPlusBody = given().spec(urlPlusParam)
+				.body(bodyDoWyslania.addPlaceBody());
+	}
+
+	@When("^user calls \"([^\"]*)\" api with Post request$")
+	public void user_calls_api_with_Post_request(String arg1) throws Throwable {
+		
+		postPlusResource = urlPlusParamPlusBody.when().post("/maps/api/place/add/json").
+				 then().spec(code200).extract().response();
+	}
+
+	@Then("^the response code is (\\d+)$")
+	public void the_response_code_is(int expectedCode) throws Throwable {
+	   
+		assertEquals(postPlusResource.getStatusCode(), expectedCode);
+	}
+
+	@Then("^\"([^\"]*)\" in response body is \"([^\"]*)\"$")
+	public void in_response_body_is(String expectedKey, String expectedValue) throws Throwable {
+	    
+		String responseString = postPlusResource.asString();
+		JsonPath js = new JsonPath(responseString);
+		assertEquals(js.getString(expectedKey), expectedValue);
+		
+	}
+	
+
+}
+
+
+--------------
+
+package dane;
+
+import java.util.Arrays;
+import java.util.List;
+
+import pojo.AddPlace;
+import pojo.Location;
+
+public class BodyDoWyslania {
+	
+	public AddPlace addPlaceBody () {
+		
+		List<String> lista = Arrays.asList("ala", "ma");
+		
+		Location locationObiekt = new Location();
+		locationObiekt.setLat(-38.383494);
+		locationObiekt.setLng(33.427362);
+		
+		
+		AddPlace place = new AddPlace();
+		place.setAccuracy(50);
+		place.setAddress("29, side layout, cohen 09");
+		place.setLanguage("French");
+		place.setLocation(locationObiekt);
+		place.setPhone_number("(+91) 983 893 3937");
+		place.setName("Bartek");
+		place.setTypes(lista);
+		place.setWebsite("www.bart.pl");
+		
+		return place;
+	}
+
+}
+================================================================================
+
+request obiekt przeniesiony do zewnętrznej klasy oraz dodane logowanie do pliku txt
+
+public class SpecBuilderCommons {
+	
+	RequestSpecification urlPlusParam;
+	
+	
+	public RequestSpecification urlPlusParamCommons() throws FileNotFoundException {
+	
+		PrintStream logObiekt = new PrintStream(new FileOutputStream("logging.txt"));
+		
+		RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		urlPlusParam = new RequestSpecBuilder()
+				.setBaseUri("https://rahulshettyacademy.com")
+				.addQueryParam("\"key\", \"qaclick123\"")
+				.addFilter(RequestLoggingFilter.logRequestTo(logObiekt))
+				.addFilter(ResponseLoggingFilter.logResponseTo(logObiekt))
+				.setContentType(ContentType.JSON)
+				.build();
+	
+		return urlPlusParam;
+		
+	}
+	
+}
+
+
+klasa steps defs wygląda wtedy jak poniżej 
+
+
+public class AddPlaceStepsDefs extends SpecBuilderCommons{
+	
+	RequestSpecification urlPlusParam;
+	RequestSpecification urlPlusParamPlusBody;
+	
+	ResponseSpecification code200;
+	Response postPlusResource;
+	
+	BodyDoWyslania bodyDoWyslania = new BodyDoWyslania();
+	
+	
+	@Given("^Add place body payload$")
+	public void add_place_body_payload() throws Throwable {
+				
+		
+		code200 = new ResponseSpecBuilder()
+				.expectStatusCode(200)
+				.expectContentType(ContentType.JSON)
+				.build();
+		
+		urlPlusParamPlusBody = given().spec(urlPlusParamCommons())
+				.body(bodyDoWyslania.addPlaceBody());
+	}
+
+	@When("^user calls \"([^\"]*)\" api with Post request$")
+	public void user_calls_api_with_Post_request(String arg1) throws Throwable {
+		
+		postPlusResource = urlPlusParamPlusBody.when().post("/maps/api/place/add/json").
+				 then().spec(code200).extract().response();
+	}
+
+	@Then("^the response code is (\\d+)$")
+	public void the_response_code_is(int expectedCode) throws Throwable {
+	   
+		assertEquals(postPlusResource.getStatusCode(), expectedCode);
+	}
+
+	@Then("^\"([^\"]*)\" in response body is \"([^\"]*)\"$")
+	public void in_response_body_is(String expectedKey, String expectedValue) throws Throwable {
+	    
+		String responseString = postPlusResource.asString();
+		JsonPath js = new JsonPath(responseString);
+		assertEquals(js.getString(expectedKey), expectedValue);
+		
+	}
+	
+
+
+
+=============================================================================
+
+logowanie do pliku tekstowego oraz czytanie adresu głównego z pliku Properties 
+
+public RequestSpecification urlPlusParamCommons() throws IOException {
+	
+		PrintStream logObiekt = new PrintStream(new FileOutputStream("logging.txt"));
+		
+		//RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		urlPlusParam = new RequestSpecBuilder()
+				.setBaseUri(getMainUrl("baseUrl"))
+				.addQueryParam("\"key\", \"qaclick123\"")
+				.addFilter(RequestLoggingFilter.logRequestTo(logObiekt))
+				.addFilter(ResponseLoggingFilter.logResponseTo(logObiekt))
+				.setContentType(ContentType.JSON)
+				.build();
+	
+		return urlPlusParam;
+		
+	}
+	
+	public static String getMainUrl(String key) throws IOException {
+		 Properties properties = new Properties();
+		 FileInputStream plikProperties = new FileInputStream("/APIframwork/src/test/java/dane/glowneUrle.properties");
+		 properties.load(plikProperties);
+		 return properties.getProperty(key);
+	}
+
+
+plik properties musi mieć rozszerzenie properties i ma taką zawartość 
+
+baseUrl=https://rahulshettyacademy.com
+===================================================
+
+ustawienie, żeby plik logging.txt nie tworzył się za każdym razem nowy, czyli tutaj jest dołożony warunek if 
+
+oraz trzeba ustwić zmienną url plus param jako statyczną
+
+public class SpecBuilderCommons {
+	
+	public static RequestSpecification urlPlusParam;
+	
+	
+	public RequestSpecification urlPlusParamCommons() throws IOException {
+		
+		if (urlPlusParam == null) {
+	
+		PrintStream logObiekt = new PrintStream(new FileOutputStream("logging.txt"));
+		
+		//RestAssured.baseURI = "https://rahulshettyacademy.com";
+		
+		urlPlusParam = new RequestSpecBuilder()
+				.setBaseUri(getMainUrl("baseUrl"))
+				.addQueryParam("\"key\", \"qaclick123\"")
+				.addFilter(RequestLoggingFilter.logRequestTo(logObiekt))
+				.addFilter(ResponseLoggingFilter.logResponseTo(logObiekt))
+				.setContentType(ContentType.JSON)
+				.build();
+	
+		return urlPlusParam;
+		}
+		
+		return urlPlusParam;
+		
+	}
+	
+	public static String getMainUrl(String key) throws IOException {
+		 Properties properties = new Properties();
+		 FileInputStream plikProperties = new FileInputStream("C:\\Users\\Bartek\\eclipse-workspace\\APIframwork\\src\\test\\java\\dane\\glowneUrle.properties");
+		 properties.load(plikProperties);
+		 return properties.getProperty(key);
+	}
+	
+}
+==================================================================
+
+stworzenie klasy ENUM z wartościami URL, resources
+
+package dane;
+
+public enum ApiResourcesEnum {
+	
+	POST_RESOURCE_ADD ("/maps/api/place/add/json"),
+	POST_RESOURCE_GET ("/maps/api/place/get/json"),
+	POST_RESOURCE_DELETE ("/maps/api/place/delete/json");
+	
+	public String postUrl;
+	
+	private ApiResourcesEnum (String postUrl) {
+		this.postUrl = postUrl;
+	}
+	
+	public String getPostUrl () {
+		return postUrl;
+	}
+
+}
+
+następnie, aby wywołać taki enum w step defs robimy coś takiego 
+
+	@When("^user calls \"([^\"]*)\" api with Post request$")
+	public void user_calls_api_with_Post_request(String arg1) throws Throwable {
+		
+		ApiResourcesEnum apiresourcesEnum = ApiResourcesEnum.valueOf("POST_RESOURCE_ADD");
+		
+		postPlusResource = urlPlusParamPlusBody.when()
+				.post(apiresourcesEnum.getPostUrl())
+				.then().spec(code200).extract().response();
+	}
+
+=========================================================================================
+
