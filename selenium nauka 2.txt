@@ -2906,3 +2906,4 @@ następnie, aby wywołać taki enum w step defs robimy coś takiego
 
 =========================================================================================
 
+dopisane do bartek nauka 5
