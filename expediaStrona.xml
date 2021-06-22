@@ -1,0 +1,8 @@
+<suite name="Regression TestSuite">
+
+<test name="Chrome Test">
+	<classes>
+		<class name="maven.Bartek.projektMavenBartek.StronaExpedia"> </class>
+	</classes>
+</test>
+</suite>
